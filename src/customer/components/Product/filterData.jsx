@@ -33,8 +33,7 @@ export const singleFilter = [
             { value: "1999-2999", label: "₹1,999 To ₹2,999" },
             { value: "3999-4999", label: "₹3,999 To ₹4,999" },
         ],
-    },]
-    export const discountFilter = [
+    },
     {
         id: "discount",
         name: "discount range",
