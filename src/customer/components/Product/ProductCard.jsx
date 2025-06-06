@@ -2,9 +2,9 @@ import React from 'react'
 import "./ProductCard.css"
 export const ProductCard = ({product}) => {
   return (
-    <div className='productCard w-[15rem]  m-3 transition-all cursor-pointer pb-5' >
-        <div >
-            <img className=' w-full object-cover object-left-top'
+    <div className='productCard w-[15rem] m-3 transition-all cursor-pointer pb-5' >
+        <div className='h-[20rem]'> {/* Added fixed height */}
+            <img className='w-full h-full object-cover object-left-top'
             src={product.imageUrl} 
             alt="" />
         </div>
@@ -16,12 +16,11 @@ export const ProductCard = ({product}) => {
              </div> 
 
              <div className='flex items-left space-x-2'>
-                <p  className='font-semibold '>{product.discountedPrice}</p>
+                <p className='font-semibold'>{product.discountedPrice}</p>
                 <p className='line-through opacity-50'>{product.price}</p>
                 <p className='text-green-600 font-semibold'>{product.discountPersent}% off</p>
              </div>
-             </div>
-
+        </div>
     </div>
   )
 }

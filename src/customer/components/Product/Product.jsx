@@ -45,25 +45,70 @@ export default function Product() {
   const navigation=useNavigate();  
   
    const handleFilter=(value, sectionId)=>{
-       const searchParams = new URLSearchParams(location.search); 
-      let filterValue= searchParams.getAll(sectionId);   
-      
-      if(filterValue.length>0&& filterValue[0].split(",").includes(value) ){
-        filterValue=filterValue[0].split(",").filter((items)=> items!==value)
-        if(filterValue.length===0){
-          searchParams.delete(sectionId);
-      }}
 
+       const searchParams = new URLSearchParams(location.search); 
+/*   
+this is how the searchParams looks like it stores the key and value in the URL
+  
+    
+   {
+      color: "red,white",
+        size: "large"
+                                  }
+URLSearchParams just stores this parametre 
+simple just store in URLSearchParams using set(key,value)
+after we set it will store in storage 
+now convert that map in to string and add ? at the start of it and put in navigation(Search:Here)
+ but to update the URL we need to use navigation
+*/
+
+    let filterValue= searchParams.getAll(sectionId);   
+    //if sectionId==color it get ["red,white"] 
+         
+
+      // Now checking if value is present in this array  ["red,white"]     
+      //as diff colors are in single string so we need to split it 
+      // and check if value is present in this array
+      //if yes then we need to remove it from the array
+      if(filterValue.length>0&& filterValue[0].split(",").includes(value) ){
+        
+        filterValue=filterValue[0].split(",").filter((items)=> items!==value)
+        //if value is present in the array then we need to remove it from the filterValue and again storing it in the filterValue
+       
+        if(filterValue.length===0){
+          //now if the filterValue is empty then we need to remove the sectionId from the searchParams
+          //the sectionId is key and filterValue is value
+          searchParams.delete(sectionId); 
+      }}
+         
+      //if value is not present in the array then we need to add it to the filterValue
       else{
-        filterValue.push(value);
+        filterValue.push(value); 
+        // → value=yellow ['red,white', 'yellow']
       }
-     
+      
+      //but this is store here only need to update in the searchParams also 
+      //need to store in the form of string ['red,white', 'yellow'] ==> 'red,white,yellow'
       if(filterValue.length>0){
         searchParams.set(sectionId, filterValue.join(","));
         
       }
+      // now need to update the searchParams in the URL
+      //to do this we req navigation
+
      const queryString = searchParams.toString();
-        navigation({search:`?${queryString}`});
+//     {
+//                 color: "red,white",
+//                 size: "large"
+//                                  }
+
+//when we convert this to string it looks like this
+// "color=red,white&size=large" and now just add ? at the start of it and done 
+        
+navigation({
+  search:`?${queryString}`
+});
+//It changes the URL in the browser to include that query string.
         
 
   }
