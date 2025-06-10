@@ -1,10 +1,17 @@
 import React from "react";
 import CardItem from "./CardItem";
 import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const CartCard = () => {
+  const navigation=useNavigate();
+   
+  const handleCheckout = () => {
+    // Logic for handling checkout can be added here
+    navigation("/checkout?step=2");
+  }
   return (
-    <div>
+    <div >
       <div className="lg:grid grid-cols-3 lg:px-16 relative">
         <div className="col-span-2">
          {[1,1,1,1].map((item)=> <CardItem />) }
@@ -42,6 +49,7 @@ const CartCard = () => {
             </div>
          
           <Button 
+          onClick={()=>handleCheckout()}
             variant="contained"
             className="w-full"
             sx={{ px: "2.5rem", py: "0.7rem", bgcolor: "#9155fd ",  alignSelf:"left"}}

@@ -6,7 +6,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 const CardItem = () => {
   return (
-    <div className="p-5 shadow-lg border rounded-md">
+    <div className="p-5 mb-5 shadow-lg border rounded-md">
       <div className="flex items-center">
         <div className="w-[8rem] h-[8rem] lg:w-[9rem] lg:h[9rem">
           <img
