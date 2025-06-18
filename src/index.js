@@ -4,12 +4,18 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { store } from './State/store';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-    <App />
+    <Provider store={store}>
+       {/* //wrapping with Provider to pass the store to the app and we can access store in any component */}
+      <App />
+    </Provider>
+  
     </BrowserRouter>
   </React.StrictMode>
 );

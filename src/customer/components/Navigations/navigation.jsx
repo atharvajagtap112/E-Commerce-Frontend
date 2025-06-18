@@ -16,7 +16,11 @@ import { deepPurple } from "@mui/material/colors";
 
 import TextField from "@mui/material/TextField";
 import { navigation } from "./navigationData";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import AuthModel from "../../Auth/AuthModel";
+import RegistorForm from "../../Auth/RegistorForm";
+import { useDispatch, useSelector } from "react-redux";
+import { getUser, logout } from "../../../State/Auth/Action";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -26,12 +30,35 @@ export default function Navigation() {
   const navigate= useNavigate();
   const [open, setOpen] = useState(false);
 
-  const handleLogout = () => {}
+
 
   const [openAuthModal, setOpenAuthModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const openUserMenu = Boolean(anchorEl);
-  const jwt = localStorage.getItem("jwt");
+   const location=useLocation();
+
+ const dispatch = useDispatch();
+ const jwt=localStorage.getItem("jwt");
+ const {auth}=useSelector(store=>store)
+     
+ useEffect(() => {
+  if(jwt){
+    dispatch(getUser(jwt))
+  } 
+},[jwt,auth.jwt])
+ 
+
+ useEffect(()=>{
+   if(auth.user){
+    handleClose();
+   }
+   if(location.pathname ==="/login" || location.pathname ==="/registor"){
+   navigate(-1)
+ }
+},[auth.user]
+ )
+
+
 
 
 //   useEffect(() => {
@@ -53,7 +80,14 @@ export default function Navigation() {
   };
   const handleClose = () => {
     setOpenAuthModal(false);
+    
   };
+
+  const handleLogout=()=>{
+    dispatch(logout())
+    localStorage.clear();
+    handleCloseUserMenu();
+  }
 
   const handleCategoryClick = (category, section, item, close) => {
     navigate(`/${category.id}/${section.id}/${item.id}`);
@@ -393,8 +427,9 @@ export default function Navigation() {
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
                   
+                  { auth.user?.firstName? ( 
                     <div>
-                      <Avatar
+                     <Avatar
                         className="text-white"
                         onClick={handleUserClick}
                         aria-controls={open ? "basic-menu" : undefined}
@@ -407,9 +442,9 @@ export default function Navigation() {
                           cursor: "pointer",
                         }}
                       >
-                        {/* {auth.user?.firstName[0].toUpperCase()} */}
+                        {auth.user?.firstName[0].toUpperCase()} 
                       </Avatar>
-                      { <Button
+                       <Button
                         id="basic-button"
                         aria-controls={open ? "basic-menu" : undefined}
                         aria-haspopup="true"
@@ -417,7 +452,7 @@ export default function Navigation() {
                         onClick={handleUserClick}
                       >
                         Dashboard
-                      </Button> }
+                      </Button> 
                       <Menu
                         id="basic-menu"
                         anchorEl={anchorEl}
@@ -434,14 +469,14 @@ export default function Navigation() {
                         <MenuItem onClick={handleLogout}>Logout</MenuItem>
                       </Menu>
                     </div>
-                   {/* : (
+                      ): (
                     <Button
                       onClick={handleOpen}
                       className="text-sm font-medium text-gray-700 hover:text-gray-800"
                     >
                       Signin
                     </Button>
-                  ) */}
+                  ) }
                 </div>
 
                 {/* Search */}
@@ -480,6 +515,8 @@ export default function Navigation() {
           </div>
         </nav>
       </header>
+        
+       <AuthModel handleClose={handleClose} open={openAuthModal}/> 
      
     </div>
   );
