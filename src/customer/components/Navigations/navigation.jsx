@@ -171,7 +171,7 @@ export default function Navigation() {
                               <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
                                 <img
                                   src={item.imageSrc}
-                                  alt={item.imageAlt}
+                                 
                                   className="object-cover object-center"
                                 />
                               </div>
@@ -338,9 +338,9 @@ export default function Navigation() {
                                           className="group relative text-base sm:text-sm"
                                         >
                                           <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
-                                            <img
+                                             <img
                                               src={item.imageSrc}
-                                              alt={item.imageAlt}
+                                              
                                               className="object-cover object-center"
                                             />
                                           </div>
