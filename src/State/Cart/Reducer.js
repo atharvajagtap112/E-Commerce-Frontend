@@ -22,27 +22,27 @@ export const cartReducer = (state =initialState , action) => {
             return {
                 ...state,
                 loading:false,
-                cartItem:[...state.cartItems,action.payloads.cartItem],
+                cartItem:[...state.cartItems,action.payload.cartItem],
                 
             }
             
         case ADD_ITEM_TO_CART_FAILURE:
-            return{...state,loading:false, error:action.payloads} 
+            return{...state,loading:false, error:action.payload} 
         
         case GET_CART_SUCCESS:
             return{
                 ...state,
                 loading:true,
                 error:null,
-                cartItems:action.payloads.cartItems,
-                cart:action.payloads
+                cartItems:action.payload.cartItems,
+                cart:action.payload
             }
 
         case GET_CART_FAILURE:
             return {
                 ...state,
                 loading:false,
-                error:action.payloads
+                error:action.payload
             }
 
        case REMOVE_ITEM_FROM_CART_SUCCESS:
@@ -50,24 +50,24 @@ export const cartReducer = (state =initialState , action) => {
                 ...state,
                 loading:false,
                 error:null,
-                cartItems: state.cartItems.filter(item => item.id !== action.payloads)
+                deleteItem:action.payload
             }
 
         case UPDATE_CART_ITEM_SUCCESS:
             return {
                 ...state,
                 loading:false,
-                cartItem: state.cartItems.map(item=> 
-                    item.id===action.payload.id? action.payload : item
-                )
-            }    
+               
+                 updateCart: action.payload}
+                
+             
 
         case REMOVE_ITEM_FROM_CART_FAILURE:
            case UPDATE_CART_ITEM_FAILURE:
                return{
                 ...state,
                 loading:false,
-                error:action.payloads
+                error:action.payload
                }          
 
         default:

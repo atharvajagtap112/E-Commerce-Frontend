@@ -1,19 +1,24 @@
 import React, { useState } from "react";
 import AddressCard from "../AddressCard/adddressCard";
 import { Box, Button, Grid, TextField } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { createOrder } from "../../../State/Order/Action";
+import { useNavigate } from "react-router-dom";
 
 const DeliveryAddressForm = () => {
   // Using state to manage form data (recommended approach)
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    address: '',
+    streetAddress: '',
     city: '',
     state: '',
-    zip: '',
-    phone: ''
+    zipcode: '',
+    mobile: ''
   });
-
+    
+ const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -26,14 +31,13 @@ const DeliveryAddressForm = () => {
     e.preventDefault();
     console.log("Form submitted!");
     console.log("Address data:", formData);
+
+    dispatch(createOrder(
+      {orderData: formData,
+       navigate:navigate  
+
+      }));
     
-    // Here you can handle the form submission logic
-    // such as sending the data to an API or updating the state
-    
-    // Example: Reset form after submission
-    // setFormData({
-    //   firstName: '', lastName: '', address: '', city: '', state: '', zip: '', phone: ''
-    // });
   };
 
   return (
@@ -134,9 +138,9 @@ const DeliveryAddressForm = () => {
                   {/* Second Row */}
                   <div style={{ marginBottom: '16px' }}>
                     <TextField
-                      id="address"
-                      name="address"
-                      value={formData.address}
+                      id="streetAddress"
+                      name="streetAddress"
+                      value={formData.streetAddress}
                       onChange={handleInputChange}
                       required
                       autoComplete="street-address"
@@ -211,9 +215,9 @@ const DeliveryAddressForm = () => {
                   <div style={{ display: 'flex', gap: '16px', marginBottom: '24px' }}>
                     <TextField
                       type="text"
-                      id="zip"
-                      name="zip"
-                      value={formData.zip}
+                      id="zipcode"
+                      name="zipcode"
+                      value={formData.zipcode}
                       onChange={handleInputChange}
                       required
                       label="Zip / Postal Code"
@@ -233,9 +237,9 @@ const DeliveryAddressForm = () => {
                     />
                     <TextField
                       type="tel"
-                      id="phone"
-                      name="phone"
-                      value={formData.phone}
+                      id="mobile"
+                      name="mobile"
+                      value={formData.mobile}
                       onChange={handleInputChange}
                       required
                       label="Phone Number"

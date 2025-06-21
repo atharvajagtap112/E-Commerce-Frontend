@@ -1,16 +1,24 @@
+import { use } from "react"
 import { api } from "../../config/apiConfig"
 import { CREATE_ORDER_FAILURE, CREATE_ORDER_REQUEST, CREATE_ORDER_SUCCESS, GET_ORDER_BY_ID_FAILURE, GET_ORDER_BY_ID_REQUEST, GET_ORDER_BY_ID_SUCCESS } from "./ActionType"
+import { useNavigate } from "react-router-dom"
 
 export const createOrder=(reqData)=> async (dispatch) => {
+
+     
+
     dispatch({type:CREATE_ORDER_REQUEST})
     try{
-      const {data} =await api.post("/api/orders/", reqData.address) 
+        console.log("reqData", reqData);
+      const {data} =await api.post("/api/orders/", reqData.orderData) 
+  console.log("Order created successfully", data);
+     
       
       if(data.id){
         reqData.navigate({search:`step=3&order_id=${data.id}`})
       }
 
-      console.log("Order created successfully", data);
+    
 
       dispatch({
         type:CREATE_ORDER_SUCCESS,

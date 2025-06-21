@@ -17,7 +17,7 @@
 */
 "use client";
 
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { StarIcon } from "@heroicons/react/20/solid";
 import { Radio, RadioGroup } from "@headlessui/react";
 import { Box, Button, Grid, LinearProgress, Rating } from "@mui/material";
@@ -26,7 +26,15 @@ import ProductRatingCard from "./ProductRatingCard";
 import ProductReviewsSection from "./ProductRatingCard";
 import { mens_kurta } from "../../Data/Men/men_kurta";
 import HomeSectionCard from "../HomeSectionCard/HomeSectionCard";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { findProductsById } from "../../../State/Product/Action";
+import { store } from "../../../State/store";
+import { addItemToCart } from "../../../State/Cart/Action";
+ 
+
+
+
 
 const product = {
   name: "Basic Tee 6-Pack",
@@ -78,15 +86,60 @@ const product = {
 };
 const reviews = { href: "#", average: 4, totalCount: 117 };
 
+
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function ProductDetails() {
   const navigation = useNavigate();
-  const [selectedColor, setSelectedColor] = useState(product.colors[0]);
-  const [selectedSize, setSelectedSize] = useState(product.sizes[2]);
+  
 
+    
+  const dispatch=useDispatch();
+  const param=useParams();
+console.log("id        "+param.productId);
+
+ const {products}=useSelector(store=>store)
+
+useEffect(() => {
+
+  const data={
+    productId: param.productId
+  }
+   dispatch(findProductsById(data))
+
+},[param.productId])
+
+
+  const [selectedSize, setSelectedSize] = useState(product.sizes[0].name);
+
+  useEffect(() => {
+  console.log("Selected size:", selectedSize);
+}, [selectedSize]);
+
+  function getDiscountPercent(originalPrice, discountedPrice) {
+  if (!originalPrice || originalPrice === 0) return 0;
+  const discount = ((originalPrice - discountedPrice) / originalPrice) * 100;
+  return Math.round(discount); 
+}
+
+console.log("product IDDD", param.productId);
+
+const handleAddToCart = () => {
+
+  
+const data={
+  productId: param.productId,
+  size:selectedSize, 
+  quantity:1,
+  price: products.product?.price,
+}
+dispatch(addItemToCart(data))
+
+navigation(`/cart`)
+}
   return (
     <div className="bg-white lg:px-20">
       <div className="pt-6">
@@ -134,8 +187,8 @@ export default function ProductDetails() {
           <div className="flex flex-col items-center">
             <div className="overflow-hidden rounded-lg max-w-[30rem] max-h-[35rem]">
               <img
-                alt={product.images[0].alt}
-                src={product.images[0].src}
+                alt={products.product?.imageUrl}
+                src={products.product?.imageUrl}
                 className="hidden size-full rounded-lg object-cover lg:block"
               />
             </div>
@@ -156,10 +209,10 @@ export default function ProductDetails() {
           <div className="lg:col-span-1 mx-auto max-w-2xl px-4 pb-16 sm:px-6 lg:max-w-7xl lg:px-8 lg:pb-24 text-left ">
             <div className="lg:col-span-2">
               <h1 className="text-lg lg:text-xl font-semibold text-gray-900 text-left ">
-                Universaloutfit
+               {products.product?.brand}
               </h1>
               <h1 className="text-lg lg:text-xl text-gray-900 pt-1">
-                Casual Puff Sleeves Solid Women White Top{" "}
+                {products.product?.title}
               </h1>
             </div>
 
@@ -167,18 +220,18 @@ export default function ProductDetails() {
             <div className="mt-4 lg:row-span-3 lg:mt-0">
               <h2 className="sr-only">Product information</h2>
               <div className="flex space-x-5 items-center text-lg lg:text-xl text-gray-900">
-                <p className="font-semibold">₹199</p>
-                <p className="opacity-50 line-through">₹211</p>
-                <p className="text-green-600 font-semibold">5% off</p>
+                <p className="font-semibold">{products.product?.price}</p>
+                <p className="opacity-50 line-through">{products.product?.discountPrice}</p>
+                <p className="text-green-600 font-semibold">{getDiscountPercent(products.product?.price,products.product?.discountPrice)}%off </p>
               </div>
 
               {/* Reviews */}
               <div className="mt-6">
                 <div className="flex items-center space-x-3">
-                  <Rating name="read-only" value={3.8} readOnly />
-                  <p className="opacity-50 text-sm">56812 Ratings</p>
+                  <Rating name="read-only" value={products.product?.numRating} readOnly />
+                  <p className="opacity-50 text-sm">{products.product?.rating.length} Ratings</p>
                   <p className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500">
-                    3584 Reviews
+                    {products.product?.reviews.length} Reviews
                   </p>
                 </div>
               </div>
@@ -195,52 +248,35 @@ export default function ProductDetails() {
                       onChange={setSelectedSize}
                       className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4"
                     >
-                      {product.sizes.map((size) => (
+                      {products.product?.sizes.map((size) => (
                         <Radio
-                          key={size.name}
-                          value={size}
-                          disabled={!size.inStock}
-                          className={classNames(
-                            size.inStock
-                              ? "cursor-pointer bg-white text-gray-900 shadow-xs"
-                              : "cursor-not-allowed bg-gray-50 text-gray-200",
-                            "group relative flex items-center justify-center rounded-md border px-4 py-3 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-hidden data-focus:ring-2 data-focus:ring-indigo-500 sm:flex-1 sm:py-6"
-                          )}
-                        >
-                          <span>{size.name}</span>
-                          {size.inStock ? (
-                            <span
-                              aria-hidden="true"
-                              className="pointer-events-none absolute -inset-px rounded-md border-2 border-transparent group-data-checked:border-indigo-500 group-data-focus:border"
-                            />
-                          ) : (
-                            <span
-                              aria-hidden="true"
-                              className="pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200"
-                            >
-                              <svg
-                                stroke="currentColor"
-                                viewBox="0 0 100 100"
-                                preserveAspectRatio="none"
-                                className="absolute inset-0 size-full stroke-2 text-gray-200"
-                              >
-                                <line
-                                  x1={0}
-                                  x2={100}
-                                  y1={100}
-                                  y2={0}
-                                  vectorEffect="non-scaling-stroke"
-                                />
-                              </svg>
-                            </span>
-                          )}
-                        </Radio>
+      key={size.name}
+      value={size.name}
+      disabled={false}
+      className={classNames(
+        selectedSize === size.name
+          ? "cursor-pointer bg-indigo-100 text-indigo-900 shadow-md" // when selected
+          : "cursor-pointer bg-white text-gray-900 shadow-xs",
+        "group relative flex items-center justify-center rounded-md border px-4 py-3 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none data-focus:ring-2 data-focus:ring-indigo-500 sm:flex-1 sm:py-6"
+      )}
+    >
+      <span>{size.name}</span>
+      <span
+        aria-hidden="true"
+        className={classNames(
+          "pointer-events-none absolute -inset-px rounded-md border-2",
+          selectedSize === size.name
+            ? "border-indigo-500"
+            : "border-transparent group-hover:border-gray-300"
+        )}
+      />
+    </Radio>
                       ))}
                     </RadioGroup>
                   </fieldset>
                 </div>
                 <Button
-              onClick={()=>navigation(`/cart`)}
+              onClick={handleAddToCart}
                   variant="contained"
                   sx={{ px: "2rem", py: "1rem", bgcolor: "#9155fd " }}
                 >
@@ -256,7 +292,7 @@ export default function ProductDetails() {
 
                 <div className="space-y-6">
                   <p className="text-base text-gray-900">
-                    {product.description}
+                    {products.product?.description}
                   </p>
                 </div>
               </div>

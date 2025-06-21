@@ -19,7 +19,7 @@ export const orderReducer=(state=initialState,action)=>{
             return {    
                 ...state,                                 
                 loading:false,
-                order:action.payload,
+                
                 success:true,
                 error:null,
                 orders:[...state.orders, action.payload]
