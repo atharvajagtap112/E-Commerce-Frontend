@@ -7,6 +7,7 @@ import { store } from '../../../State/store'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { findProductsById } from '../../../State/Product/Action'
 import { getOrderById } from '../../../State/Order/Action'
+import { createPayment } from '../../../State/Payment/Action'
 
 const OrderSummary = () => {
 
@@ -17,11 +18,16 @@ const dispatch = useDispatch();
 const navigate = useNavigate();
 const location= useLocation();
 const searchParams=new URLSearchParams(location.search);
-
+  const orderId=searchParams.get("order_id");
 useEffect(() => {
-  dispatch(getOrderById(searchParams.get("order_id")))
-},[dispatch])
+  dispatch(getOrderById(orderId))
+},[orderId])
 
+  
+
+const handleCheckout=()=>{
+dispatch(createPayment(orderId))
+}
 
   return (
     <div className=' space-y-5'> 
@@ -70,6 +76,7 @@ useEffect(() => {
             variant="contained"
             className="w-full"
             sx={{ px: "2.5rem", py: "0.7rem", bgcolor: "#9155fd ",  alignSelf:"left"}}
+            onClick={handleCheckout}
           >
             Checkout
           </Button>
