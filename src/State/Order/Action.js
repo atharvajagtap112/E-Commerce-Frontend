@@ -1,6 +1,6 @@
 import { use } from "react"
 import { api } from "../../config/apiConfig"
-import { CREATE_ORDER_FAILURE, CREATE_ORDER_REQUEST, CREATE_ORDER_SUCCESS, GET_ORDER_BY_ID_FAILURE, GET_ORDER_BY_ID_REQUEST, GET_ORDER_BY_ID_SUCCESS } from "./ActionType"
+import { CREATE_ORDER_FAILURE, CREATE_ORDER_REQUEST, CREATE_ORDER_SUCCESS, GET_ORDER_BY_ID_FAILURE, GET_ORDER_BY_ID_REQUEST, GET_ORDER_BY_ID_SUCCESS, GET_ORDERS_FAILURE, GET_ORDERS_REQUEST, GET_ORDERS_SUCCESS } from "./ActionType"
 import { useNavigate } from "react-router-dom"
 
 export const createOrder=(reqData)=> async (dispatch) => {
@@ -53,3 +53,17 @@ export const getOrderById = (orderId) => async (dispatch) => {
         });
     }
 };
+
+export const getOrders = () => async (dispatch) => {
+    dispatch({type: GET_ORDERS_REQUEST})
+    
+    try{
+        const {data}=await api.get("/api/orders/user")
+        console.log("Orders fetched successfully", data);
+        dispatch({type:GET_ORDERS_SUCCESS,payload:data})
+    }
+    catch(error){
+        console.log("Error fetching orders", error);
+        dispatch({type:GET_ORDERS_FAILURE,payload:error.message})
+    }
+}

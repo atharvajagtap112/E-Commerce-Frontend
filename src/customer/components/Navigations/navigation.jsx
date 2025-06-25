@@ -21,6 +21,7 @@ import AuthModel from "../../Auth/AuthModel";
 import RegistorForm from "../../Auth/RegistorForm";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser, logout } from "../../../State/Auth/Action";
+import { getCart } from "../../../State/Cart/Action";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -40,6 +41,7 @@ export default function Navigation() {
  const dispatch = useDispatch();
  const jwt=localStorage.getItem("jwt");
  const {auth}=useSelector(store=>store)
+ const {cart}=useSelector(store=>store);
      
  useEffect(() => {
   if(jwt){
@@ -61,12 +63,12 @@ export default function Navigation() {
 
 
 
-//   useEffect(() => {
-//     if (jwt) {
-//       dispatch(getUser(jwt));
-//       dispatch(getCart(jwt));
-//     }
-//   }, [jwt]);
+  useEffect(() => {
+    if (jwt) {
+      // dispatch(getUser(jwt));
+      dispatch(getCart());
+    }
+  }, [jwt]);
 
   const handleUserClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -444,15 +446,7 @@ export default function Navigation() {
                       >
                         {auth.user?.firstName[0].toUpperCase()} 
                       </Avatar>
-                       <Button
-                        id="basic-button"
-                        aria-controls={open ? "basic-menu" : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? "true" : undefined}
-                        onClick={handleUserClick}
-                      >
-                        Dashboard
-                      </Button> 
+                   
                       <Menu
                         id="basic-menu"
                         anchorEl={anchorEl}
@@ -488,6 +482,7 @@ export default function Navigation() {
                     <span className="sr-only">Search</span>
                     
                     <MagnifyingGlassIcon
+                    onClick={()=>navigate("/search")}
                       className="h-6 w-6"
                       aria-hidden="true"
                     />
@@ -495,7 +490,7 @@ export default function Navigation() {
                 </div>
 
                 {/* Cart */}
-                {/* <div className="ml-4 flow-root lg:ml-6">
+                <div className="ml-4 flow-root lg:ml-6">
                   <Button
                     onClick={() => navigate("/cart")}
                     className="group -m-2 flex items-center p-2"
@@ -509,7 +504,7 @@ export default function Navigation() {
                     </span>
                     <span className="sr-only">items in cart, view bag</span>
                   </Button>
-                </div> */}
+                </div>
               </div>
             </div>
           </div>

@@ -18,7 +18,7 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
-import { StarIcon } from "@heroicons/react/20/solid";
+import { BellAlertIcon, StarIcon } from "@heroicons/react/20/solid";
 import { Radio, RadioGroup } from "@headlessui/react";
 import { Box, Button, Grid, LinearProgress, Rating } from "@mui/material";
 import ProductReviewsCard from "./ProductReviewsCard";
@@ -28,13 +28,9 @@ import { mens_kurta } from "../../Data/Men/men_kurta";
 import HomeSectionCard from "../HomeSectionCard/HomeSectionCard";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { findProductsById } from "../../../State/Product/Action";
+import { findProductsByCategories, findProductsById } from "../../../State/Product/Action";
 import { store } from "../../../State/store";
 import { addItemToCart } from "../../../State/Cart/Action";
- 
-
-
-
 
 const product = {
   name: "Basic Tee 6-Pack",
@@ -86,101 +82,79 @@ const product = {
 };
 const reviews = { href: "#", average: 4, totalCount: 117 };
 
-
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function ProductDetails() {
   const navigation = useNavigate();
-  
 
-    
-  const dispatch=useDispatch();
-  const param=useParams();
-console.log("id        "+param.productId);
+  const dispatch = useDispatch();
+  const param = useParams();
+  console.log("id        " + param.productId);
 
- const {products}=useSelector(store=>store)
+  const { products } = useSelector((store) => store);
 
-useEffect(() => {
-
-  const data={
-    productId: param.productId
-  }
-   dispatch(findProductsById(data))
-
-},[param.productId])
-
+  useEffect(() => {
+    const data = {
+      productId: param.productId,
+    };
+    dispatch(findProductsById(data));
+  }, [param.productId]);
 
   const [selectedSize, setSelectedSize] = useState(product.sizes[0].name);
 
   useEffect(() => {
-  console.log("Selected size:", selectedSize);
-}, [selectedSize]);
+    console.log("Selected size:", selectedSize);
+  }, [selectedSize]);
 
   function getDiscountPercent(originalPrice, discountedPrice) {
-  if (!originalPrice || originalPrice === 0) return 0;
-  const discount = ((originalPrice - discountedPrice) / originalPrice) * 100;
-  return Math.round(discount); 
-}
+    if (!originalPrice || originalPrice === 0) return 0;
+    const discount = ((originalPrice - discountedPrice) / originalPrice) * 100;
+    return Math.round(discount);
+  }
 
-console.log("product IDDD", param.productId);
+  console.log("product IDDD", param.productId);
 
-const handleAddToCart = () => {
+  const handleAddToCart = () => {
+    const data = {
+      productId: param.productId,
+      size: selectedSize,
+      quantity: 1,
+      price: products.product?.price,
+    };
+    dispatch(addItemToCart(data));
 
-  
-const data={
-  productId: param.productId,
-  size:selectedSize, 
-  quantity:1,
-  price: products.product?.price,
-}
-dispatch(addItemToCart(data))
+    navigation(`/cart`);
+  };
 
-navigation(`/cart`)
-}
+
+  useEffect(() => {
+
+      
+       const data=[
+            {
+              categoryTitle:"Selected Category",
+              categoryName:products.product?.category.name
+            }
+       ]
+   
+   dispatch(findProductsByCategories(data));
+
+  },[dispatch, products.product?.category.name]);
+
+  const averageRating =
+    products.product?.reviews.length === 0
+      ? 0
+      : (
+          products.product?.reviews.reduce((sum, r) => sum + r.rating, 0) /
+          products.product?.reviews.length
+        ).toFixed(1);
+
   return (
     <div className="bg-white lg:px-20">
       <div className="pt-6">
-        <nav aria-label="Breadcrumb">
-          <ol
-            role="list"
-            className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8"
-          >
-            {product.breadcrumbs.map((breadcrumb) => (
-              <li key={breadcrumb.id}>
-                <div className="flex items-center">
-                  <a
-                    href={breadcrumb.href}
-                    className="mr-2 text-sm font-medium text-gray-900"
-                  >
-                    {breadcrumb.name}
-                  </a>
-                  <svg
-                    fill="currentColor"
-                    width={16}
-                    height={20}
-                    viewBox="0 0 16 20"
-                    aria-hidden="true"
-                    className="h-5 w-4 text-gray-300"
-                  >
-                    <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
-                  </svg>
-                </div>
-              </li>
-            ))}
-            <li className="text-sm">
-              <a
-                href={product.href}
-                aria-current="page"
-                className="font-medium text-gray-500 hover:text-gray-600"
-              >
-                {product.name}
-              </a>
-            </li>
-          </ol>
-        </nav>
+        <nav aria-label="Breadcrumb"></nav>
 
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-10 px-4 pt-10">
           {/* Image gallery */}
@@ -192,7 +166,7 @@ navigation(`/cart`)
                 className="hidden size-full rounded-lg object-cover lg:block"
               />
             </div>
-            <div className="flex flex-wrap space-x-5 justify-center">
+            {/* <div className="flex flex-wrap space-x-5 justify-center">
               {product.images.map((image) => (
                 <div className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg max-w-[5rem] max-h-[5rem] mt-4">
                   <img
@@ -202,14 +176,14 @@ navigation(`/cart`)
                   />
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
 
           {/* Product info */}
           <div className="lg:col-span-1 mx-auto max-w-2xl px-4 pb-16 sm:px-6 lg:max-w-7xl lg:px-8 lg:pb-24 text-left ">
             <div className="lg:col-span-2">
               <h1 className="text-lg lg:text-xl font-semibold text-gray-900 text-left ">
-               {products.product?.brand}
+                {products.product?.brand}
               </h1>
               <h1 className="text-lg lg:text-xl text-gray-900 pt-1">
                 {products.product?.title}
@@ -220,16 +194,30 @@ navigation(`/cart`)
             <div className="mt-4 lg:row-span-3 lg:mt-0">
               <h2 className="sr-only">Product information</h2>
               <div className="flex space-x-5 items-center text-lg lg:text-xl text-gray-900">
-                <p className="font-semibold">{products.product?.price}</p>
-                <p className="opacity-50 line-through">{products.product?.discountPrice}</p>
-                <p className="text-green-600 font-semibold">{getDiscountPercent(products.product?.price,products.product?.discountPrice)}%off </p>
+                <p className="font-semibold">
+                  ₹{products.product?.discountPrice}
+                </p>
+                <p className="opacity-50 line-through">
+                  ₹{products.product?.price}
+                </p>
+                <p className="text-green-600 font-semibold">
+                  {getDiscountPercent(
+                    products.product?.price,
+                    products.product?.discountPrice
+                  )}
+                  %off{" "}
+                </p>
               </div>
 
               {/* Reviews */}
               <div className="mt-6">
                 <div className="flex items-center space-x-3">
-                  <Rating name="read-only" value={products.product?.numRating} readOnly />
-                  <p className="opacity-50 text-sm">{products.product?.rating.length} Ratings</p>
+                  <Rating
+                    value={Number(averageRating)}
+                    readOnly
+                    precision={0.1}
+                  />
+
                   <p className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500">
                     {products.product?.reviews.length} Reviews
                   </p>
@@ -237,7 +225,7 @@ navigation(`/cart`)
               </div>
               <form className="mt-10">
                 {/* Sizes */}
-                <div className="mt-10">
+                <div className="mt-10 mb-5">
                   <div className="flex items-center justify-between">
                     <h3 className="text-sm font-medium text-gray-900">Size</h3>
                   </div>
@@ -250,33 +238,33 @@ navigation(`/cart`)
                     >
                       {products.product?.sizes.map((size) => (
                         <Radio
-      key={size.name}
-      value={size.name}
-      disabled={false}
-      className={classNames(
-        selectedSize === size.name
-          ? "cursor-pointer bg-indigo-100 text-indigo-900 shadow-md" // when selected
-          : "cursor-pointer bg-white text-gray-900 shadow-xs",
-        "group relative flex items-center justify-center rounded-md border px-4 py-3 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none data-focus:ring-2 data-focus:ring-indigo-500 sm:flex-1 sm:py-6"
-      )}
-    >
-      <span>{size.name}</span>
-      <span
-        aria-hidden="true"
-        className={classNames(
-          "pointer-events-none absolute -inset-px rounded-md border-2",
-          selectedSize === size.name
-            ? "border-indigo-500"
-            : "border-transparent group-hover:border-gray-300"
-        )}
-      />
-    </Radio>
+                          key={size.name}
+                          value={size.name}
+                          disabled={false}
+                          className={classNames(
+                            selectedSize === size.name
+                              ? "cursor-pointer bg-indigo-100 text-indigo-900 shadow-md" // when selected
+                              : "cursor-pointer bg-white text-gray-900 shadow-xs",
+                            "group relative flex items-center justify-center rounded-md border px-4 py-3 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none data-focus:ring-2 data-focus:ring-indigo-500 sm:flex-1 sm:py-6"
+                          )}
+                        >
+                          <span>{size.name}</span>
+                          <span
+                            aria-hidden="true"
+                            className={classNames(
+                              "pointer-events-none absolute -inset-px rounded-md border-2",
+                              selectedSize === size.name
+                                ? "border-indigo-500"
+                                : "border-transparent group-hover:border-gray-300"
+                            )}
+                          />
+                        </Radio>
                       ))}
                     </RadioGroup>
                   </fieldset>
                 </div>
                 <Button
-              onClick={handleAddToCart}
+                  onClick={handleAddToCart}
                   variant="contained"
                   sx={{ px: "2rem", py: "1rem", bgcolor: "#9155fd " }}
                 >
@@ -298,11 +286,11 @@ navigation(`/cart`)
               </div>
 
               <div className="mt-10">
-                <h3 className="text-sm font-medium text-gray-900">
+                {/* <h3 className="text-sm font-medium text-gray-900">
                   Highlights
-                </h3>
+                </h3> */}
 
-                <div className="mt-4">
+                {/* <div className="mt-4">
                   <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
                     {product.highlights.map((highlight) => (
                       <li key={highlight} className="text-gray-400">
@@ -318,39 +306,44 @@ navigation(`/cart`)
 
                 <div className="mt-4 space-y-6">
                   <p className="text-sm text-gray-600">{product.details}</p>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
         </section>
 
         {/* rating and Reviews */}
-
         <section>
           <h1 className="font-semibold text-lg pb-4">Recent Review & Rating</h1>
-          <div className="border p-5">
-            <Grid container spacing={7}  >
-              <Grid item xs={7}>
+          <div className="border p-5 max-w-6xl mx-auto">
+            <Grid container spacing={3}>
+             { products?.product?.reviews.length > 0 &&
+              <Grid item xs={12} md={8}>
                 <div className="space-y-5">
-                  {[1, 1, 1, 1].map((item) => (
-                    <ProductReviewsCard />
+                  {products?.product?.reviews.map((item, i) => (
+                    <ProductReviewsCard key={i} item={item} />
                   ))}
                 </div>
               </Grid>
-              <Grid item xs={5}>
-                <ProductRatingCard /> </Grid>
+}
+              <Grid item xs={12} md={4}>
+                <ProductRatingCard item={products.product?.reviews} />
               </Grid>
-                </div>
-</section>
-
-{/* Similar Product    */}
-<section className="mt-10">
- <h1 className="py-5 text-xl  text-left font-bold">Similar Product</h1>
- <div className="flex flex-wrap  " > 
-  {mens_kurta.map((item) => <div className="py-5"> <HomeSectionCard product={item}/> </div>)}
-  </div>
-  </section>
-
+            </Grid>
+          </div>
+        </section>
+        {/* Similar Product    */}
+        <section className="mt-10">
+          <h1 className="py-5 text-xl  text-left font-bold">Similar Product</h1>
+          <div className="flex flex-wrap  ">
+            {products?.productsByCategories[0]?.products?.map((item) => (
+              <div className="py-5">
+                {" "}
+                <HomeSectionCard product={item} />{" "}
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
     </div>
   );

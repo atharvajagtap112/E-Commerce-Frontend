@@ -6,7 +6,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { useDispatch } from "react-redux";
 import { removeItemFromCart, removeItemToCart, updateItemToCart } from "../../../State/Cart/Action";
-const CardItem = ({item}) => {
+const CardItem = ({item,isCheckout}) => {
 
   const findDiscount = (price, discountPrice) => {
     if (price && discountPrice) {
@@ -54,7 +54,8 @@ const dispatch = useDispatch();
           </div>
         </div> 
         </div>
-
+           
+           { isCheckout ? null :
            <div className="lg:flex items-center lg:space-x-2 pt-4 align-left">
              <div className="flex item-center space-x-2"></div>
               <IconButton onClick={()=>updateCartItem(-1)} 
@@ -69,14 +70,15 @@ const dispatch = useDispatch();
                  >
                   <AddCircleOutlineIcon></AddCircleOutlineIcon>
                  </IconButton>
-              <div>
+              <div> 
+               
                   <Button 
                   onClick={handleRemoveItem}
                   sx={{ color: "RGB(145 85 253)"}}>
                      Remove
                   </Button>
                 </div>
-            </div>  
+            </div>  }
 
                
 

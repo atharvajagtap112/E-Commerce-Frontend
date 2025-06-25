@@ -22,7 +22,7 @@ const HomeSectionCarosel = ({data,sectionName}) => {
     console.log(activeIndex)
     setActiveIndex(activeIndex+1)}
 
-  const items = data.slice(0,10).map((item) => ( <HomeSectionCard product={item}  /> ));
+  const items = data?.slice(0,10).map((item) => ( <HomeSectionCard product={item}  /> ));
   return (
     <div className="border">
       <h2 className="text-2xl font-extrabold text-left text-gray-800">
@@ -38,7 +38,7 @@ const HomeSectionCarosel = ({data,sectionName}) => {
           activeIndex={activeIndex}
         />
 
-        {activeIndex !== items.length-5 && 
+        {activeIndex !== items?.length-5 && 
           <Button
             onClick={slidNext}
             variant="contained"

@@ -32,8 +32,8 @@ import { findProducts } from "../../../State/Product/Action";
 import { store } from "../../../State/store";
 
 const sortOptions = [
-  { name: "Price: Low to High", href: "#", current: false },
-  { name: "Price: High to Low", href: "#", current: false },
+  { name: "Price: Low to High", href: "#", current: false , option:"price_low" },
+  { name: "Price: High to Low", href: "#", current: false, option:"price_high" },
 ];
 
  
@@ -83,7 +83,7 @@ const param =useParams();
       sort:sortValue || "price_low",
       pageNumber: pageNumber-1||0,
       stock: stock ,
-      pageSize:1,
+      pageSize:10,
 
     }
 
@@ -185,6 +185,13 @@ navigation({
   const handleRadioFilterChnage=(value, sectionId)=>{
    const searchParams = new URLSearchParams(location.search); 
    searchParams.set(sectionId, value.target.value);
+     const queryString = searchParams.toString();
+        navigation({search:`?${queryString}`});
+  }
+
+  const handleSortFilterChange=(value, sectionId)=>{
+   const searchParams = new URLSearchParams(location.search); 
+   searchParams.set(sectionId, value);
      const queryString = searchParams.toString();
         navigation({search:`?${queryString}`});
   }
@@ -380,7 +387,10 @@ navigation({
             <div className="flex items-center">
               <Menu as="div" className="relative inline-block text-left">
                 <div>
-                  <MenuButton className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
+                  <MenuButton 
+                    
+
+                  className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
                     Sort
                     <ChevronDownIcon
                       aria-hidden="true"
@@ -397,7 +407,7 @@ navigation({
                     {sortOptions.map((option) => (
                       <MenuItem key={option.name}>
                         <a
-                          href={option.href}
+                          onClick={()=>handleSortFilterChange(option.option,"sort")}
                           className={classNames(
                             option.current
                               ? "font-medium text-gray-900"
@@ -561,7 +571,7 @@ navigation({
 </div>
               {/* Product grid */}
               <div className="lg:col-span-4 w-full">
-                <div className="flex flex-wrap justify-center bg-white py-5">
+                <div className="flex flex-wrap justify-left bg-white py-5">
                      {products.products&&products.products?.content?.map((product) => (
                     <ProductCard product={product} />
                   ))}

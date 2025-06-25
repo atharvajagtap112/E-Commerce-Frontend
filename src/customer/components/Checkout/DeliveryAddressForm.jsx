@@ -13,7 +13,7 @@ const DeliveryAddressForm = () => {
     streetAddress: '',
     city: '',
     state: '',
-    zipcode: '',
+    zipCode: '',
     mobile: ''
   });
     
@@ -215,9 +215,9 @@ const DeliveryAddressForm = () => {
                   <div style={{ display: 'flex', gap: '16px', marginBottom: '24px' }}>
                     <TextField
                       type="text"
-                      id="zipcode"
-                      name="zipcode"
-                      value={formData.zipcode}
+                      id="zipCode"
+                      name="zipCode"
+                      value={formData.zipCode}
                       onChange={handleInputChange}
                       required
                       label="Zip / Postal Code"

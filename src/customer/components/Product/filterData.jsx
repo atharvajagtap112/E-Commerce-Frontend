@@ -3,6 +3,9 @@ export const filters = [
         id: "color",
         name: "Color",
         options: [
+            { value: "black", label: "Black" },
+            { value: "gray", label: "Gray" },
+            { value: "red", label: "Red" },
             { value: "white", label: "White" },
             { value: "beige", label: "Beige" },
             { value: "blue", label: "Blue" },
@@ -34,20 +37,7 @@ export const singleFilter = [
             { value: "3999-4999", label: "₹3,999 To ₹4,999" },
         ],
     },
-    {
-        id: "discount",
-        name: "discount range",
-        options: [
-            { value: "10", label: "10% And Above" },
-            { value: "20", label: "20% And Above" },
-            { value: "30", label: "30% And Above" },
-            { value: "40", label: "40% And Above" },
-            { value: "50", label: "50% And Above" },
-            { value: "60", label: "60% And Above" },
-            { value: "70", label: "70% And Above" },
-            { value: "80", label: "80% And Above" },
-        ],
-    },
+
     {
         id: "stock",
         name: "Availability",
