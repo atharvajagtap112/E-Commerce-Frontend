@@ -2,6 +2,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as Chart from 'chart.js';
 import SentimentChart from './SentimentChart'; // Make sure path is correct
+import { useDispatch } from 'react-redux';
+import { findProducts } from '../../../State/Product/Action';
+import { useNavigate } from 'react-router-dom';
 
 const AISearch = () => {
   const [messages, setMessages] = useState([]);
@@ -10,6 +13,9 @@ const AISearch = () => {
   const [chatSessions, setChatSessions] = useState([]);
   const [socket, setSocket] = useState(null);
   const chatBoxRef = useRef(null);
+  
+  const dispatch = useDispatch();
+  const navigation = useNavigate();
 
   useEffect(() => {
     const connectWebSocket = () => {
@@ -22,19 +28,16 @@ const AISearch = () => {
       ws.onmessage = (event) => {
         console.log("🔹 Received WebSocket Message: ", event.data);
         setIsLoading(false);
-
+        
         try {
           let data = JSON.parse(event.data);
 
-          if (data.Positive !== undefined && data.Negative !== undefined && data.Neutral !== undefined) {
-            console.log("✅ Sentiment Report Detected!");
-            addMessage("✅ Sentiment Report Generated.", "bot", data);
-          } else if (data.candidates) {
-            let aiResponse = data.candidates[0].content.parts[0].text;
-            addMessage(aiResponse, "bot");
-          } else {
-            addMessage(event.data, "bot");
-          }
+          console.log("🔹 Parsed WebSocket Data: ", data);
+
+          dispatch(findProducts(data));
+
+          navigation(`/search/${data.category}`);
+
         } catch (error) {
           console.error("❌ Error parsing WebSocket response:", error);
           addMessage(event.data, "bot");
@@ -57,7 +60,7 @@ const AISearch = () => {
         newSocket.close();
       }
     };
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (chatBoxRef.current) {

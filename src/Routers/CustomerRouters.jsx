@@ -11,6 +11,7 @@ import OrderDetails from '../customer/components/Order/OrderDetails'
 import Product from '../customer/components/Product/Product'
 import PaymentSucess from '../customer/components/Payment/PaymentSucess'
 import AISearch from '../customer/components/AI Search/AI_Search'
+import SearchedProduct from '../customer/components/Product/SearchedProduct'
 
 const CustomerRouters = () => {
   return (
@@ -31,7 +32,7 @@ const CustomerRouters = () => {
           <Route path='/account/order/:orderId' element={ <OrderDetails/>} > </Route> 
             <Route path='/payment/:orderId' element={ <PaymentSucess/>} > </Route> 
             <Route path='/search' element={ <AISearch/>} > </Route> 
-         
+            <Route path='/search/:query' element={ <SearchedProduct/>} > </Route>  
         </Routes>
           
           <div>
