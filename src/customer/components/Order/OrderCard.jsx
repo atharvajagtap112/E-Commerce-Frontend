@@ -7,16 +7,38 @@ import PaymentIcon from "@mui/icons-material/Payment";
 const OrderCard = ({ order }) => {
   const navigate = useNavigate();
 
-  const getStatusColor = (status) => {
-    const statusColors = {
-      'PENDING': 'bg-yellow-100 text-yellow-800 border-yellow-200',
-      'CONFIRMED': 'bg-blue-100 text-blue-800 border-blue-200',
-      'SHIPPED': 'bg-purple-100 text-purple-800 border-purple-200',
-      'DELIVERED': 'bg-green-100 text-green-800 border-green-200',
-      'CANCELLED': 'bg-red-100 text-red-800 border-red-200',
+ 
+    const getStatus = {
+      'PLACED': {
+        status: "PLACED",
+        color: 'bg-yellow-100 text-yellow-800 border-yellow-200'
+      },
+
+      'PENDING': {
+        status:"PENDING",
+        color:'bg-yellow-100 text-yellow-800 border-yellow-200'}
+        ,
+      'ORDER_CONFIRMED': {
+        status:"CONFIRMED",
+       color: 'bg-blue-100 text-blue-800 border-blue-200'}
+        ,
+      'SHIPPED':{ 
+        status:"SHIPPED",
+       color: 'bg-purple-100 text-purple-800 border-purple-200'},
+      'DELIVERED':{ 
+        status:"DELIVERED",
+       color: 'bg-green-100 text-green-800 border-green-200'},
+
+      'OUT_FOR_DELIVERY':{ 
+       status:"OUT_FOR_DELIVERY",
+        color: 'bg-orange-100 text-orange-800 border-orange-200'},
+
+      'CANCELLED':{ 
+       status:"CANCELLED", 
+       color: 'bg-red-100 text-red-800 border-red-200'},
     };
-    return statusColors[status?.toUpperCase()] || 'bg-gray-100 text-gray-800 border-gray-200';
-  };
+   
+
 
   const getPaymentStatusColor = (status) => {
     return status?.toLowerCase() === 'completed' || status?.toLowerCase() === 'paid'
@@ -50,8 +72,8 @@ const OrderCard = ({ order }) => {
               </p>
             </div>
           </div>
-          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(order.orderStatus)}`}>
-            {order.orderStatus}
+          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatus[order.orderStatus]?.color}`}>
+            {getStatus[order.orderStatus]?.status || 'Unknown Status'}
           </span>
         </div>
 

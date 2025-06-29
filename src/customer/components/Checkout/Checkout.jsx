@@ -5,7 +5,7 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import DeliveryAddressForm from './DeliveryAddressForm';
 import OrderSummary from './OrderSummary';
 
@@ -16,6 +16,11 @@ export default function Checkout() {
   const [skipped, setSkipped] = React.useState(new Set());
     const location=useLocation();
    const querySearch=new URLSearchParams(location.search);
+
+   const navigation=useNavigate();
+
+   const jwt=localStorage.getItem("jwt");
+  
    
   const step= querySearch.get("step");
   const handleNext = () => {
@@ -24,6 +29,7 @@ export default function Checkout() {
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    querySearch.set("step", step-1);
   };
 
 
@@ -55,14 +61,14 @@ export default function Checkout() {
         <React.Fragment>
           {/* <Typography sx={{ mt: 2, mb: 1 , mr: 1, textAlign:"left"}}>Step {activeStep + 1}</Typography> */}
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-            <Button
+            {/* <Button
               color="inherit"
               disabled={activeStep === 0}
               onClick={handleBack}
               sx={{ mr: 1 }}
             >
               Back
-            </Button>
+            </Button> */}
            
            
           

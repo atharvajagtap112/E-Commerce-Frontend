@@ -5,17 +5,26 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getCart } from "../../../State/Cart/Action";
 import { store } from "../../../State/store";
+import { toast } from "react-toastify";
 
 const CartCard = () => {
   const navigation=useNavigate();
+   const dispatch=useDispatch();
+  const {cart}=useSelector(store=>store)
+ 
    
+ 
   const handleCheckout = () => {
+
+     if (!cart.cartItems || cart.cartItems.length === 0) {
+      toast.error("Your cart is empty. Please add items to your cart before proceeding to checkout.");
+      return;
+     }
     // Logic for handling checkout can be added here
     navigation("/checkout?step=2");
   }
 
-  const dispatch=useDispatch();
-  const {cart}=useSelector(store=>store)
+  
 
   useEffect(() => {
     dispatch(getCart())
@@ -29,7 +38,11 @@ const CartCard = () => {
     <div >
       <div className="lg:grid grid-cols-3 lg:px-16 relative">
         <div className="col-span-2">
-         {cart?.cartItems?.map((item)=> <CardItem item={item}/>) }
+         {cart.cartItems.length === 0?
+          <div className="flex justify-center items-center h-[100vh]">
+            <p className="text-2xl font-bold">Your Cart is Empty</p>
+          </div>
+         :cart?.cartItems?.map((item)=> <CardItem item={item}/>) }
         </div>
         <div className=" px-5 sticky top-0 h-[100vh] mt-5 lg:mt-0">
           <div className="border">

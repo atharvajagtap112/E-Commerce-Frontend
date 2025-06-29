@@ -56,6 +56,7 @@ const param =useParams();
 
 
 
+
   const colorValue= searchParams.get("color");
   const sizeValue= searchParams.get("size");
   const sortValue= searchParams.get("sort");
@@ -63,14 +64,45 @@ const param =useParams();
   const discount=searchParams.get("discount");
   const pageNumber=searchParams.get("page")||1;
   const stock= searchParams.get("stock");
-
+ 
+  
   const dispatch=useDispatch();
 
   const {products}=useSelector(store=>store)
 
   useEffect(() => {
 
-  },[products])
+      const [minPrice,maxPrice]= priceValue===null?[0,100000]:priceValue.split("-").map(Number)
+
+  const data={
+
+      category:param.query,
+      colors: colorValue || [],
+      sizes: sizeValue || [],
+      minPrice: minPrice,
+      maxPrice: maxPrice,
+      minDiscount: discount || 0,
+      maxDiscount: discount || 100000,
+      sort:sortValue || "price_low",
+      pageNumber: pageNumber-1||0,
+      stock: stock ,
+      pageSize:10,
+
+    }
+
+   console.log(data);
+
+    dispatch(findProducts(data));
+  },[
+    param.query,
+   colorValue,  
+    sizeValue,
+    sortValue,
+    priceValue,
+    discount,
+    pageNumber,
+    stock     
+  ])
 
 
 

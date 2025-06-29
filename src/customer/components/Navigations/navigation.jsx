@@ -96,6 +96,11 @@ export default function Navigation() {
     close();
   };
 
+    const handleCategoryClick1 = (category, section, item) => {
+    navigate(`/${category.id}/${section.id}/${item.id}`);
+    
+  };
+
 
 
   return (
@@ -160,39 +165,12 @@ export default function Navigation() {
                   </div>
                   <Tab.Panels as={Fragment}>
                     {navigation.categories.map((category) => (
+                    
                       <Tab.Panel
                         key={category.name}
                         className="space-y-10 px-4 pb-8 pt-10"
                       >
-                        <div className="grid grid-cols-2 gap-x-4">
-                          {category.featured.map((item) => (
-                            <div
-                              key={item.name}
-                              className="group relative text-sm"
-                            >
-                              <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
-                                <img
-                                  src={item.imageSrc}
-                                 
-                                  className="object-cover object-center"
-                                />
-                              </div>
-                              <a
-                                href={item.href}
-                                className="mt-6 block font-medium text-gray-900"
-                              >
-                                <span
-                                  className="absolute inset-0 z-10"
-                                  aria-hidden="true"
-                                />
-                                {item.name}
-                              </a>
-                              <p aria-hidden="true" className="mt-1">
-                                Shop now
-                              </p>
-                            </div>
-                          ))}
-                        </div>
+                      
                         {category.sections.map((section) => (
                           <div key={section.name}>
                             <p
@@ -209,8 +187,18 @@ export default function Navigation() {
                             >
                               {section.items.map((item) => (
                                 <li key={item.name} className="flow-root">
-                                  <p className="-m-2 block p-2 text-gray-500">
-                                    {"item.name"}
+                                  <p className="-m-2 block p-2 text-gray-500"
+                                  onClick={() =>
+                                                    handleCategoryClick1(
+                                                      category,
+                                                      section,
+                                                      item,
+                                                     
+                                                    )
+                                                  }
+                                  >
+                                    
+                                    {item.name}
                                   </p>
                                 </li>
                               ))}
@@ -218,11 +206,13 @@ export default function Navigation() {
                           </div>
                         ))}
                       </Tab.Panel>
+
+                      
                     ))}
                   </Tab.Panels>
                 </Tab.Group>
 
-                <div className="space-y-6 border-t border-gray-200 px-4 py-6">
+                {/* <div className="space-y-6 border-t border-gray-200 px-4 py-6">
                   {navigation.pages.map((page) => (
                     <div key={page.name} className="flow-root">
                       <a
@@ -233,7 +223,7 @@ export default function Navigation() {
                       </a>
                     </div>
                   ))}
-                </div>
+                </div> */}
 
                 <div className="space-y-6 border-t border-gray-200 px-4 py-6">
                   <div className="flow-root">
@@ -267,7 +257,7 @@ export default function Navigation() {
 
       <header className="relative bg-white">
         <p className="flex h-10 items-center justify-center bg-indigo-600 px-4 text-sm font-medium text-white sm:px-6 lg:px-8">
-          Get free delivery on orders over $100
+          Get free delivery on orders over ₹500
         </p>
 
         <nav aria-label="Top" className="mx-auto">
@@ -414,7 +404,7 @@ export default function Navigation() {
                     </Popover>
                   ))}
 
-                  {navigation.pages.map((page) => (
+                  {/* {navigation.pages.map((page) => (
                     <a
                       key={page.name}
                       href={page.href}
@@ -422,7 +412,7 @@ export default function Navigation() {
                     >
                       {page.name}
                     </a>
-                  ))}
+                  ))} */}
                 </div>
               </Popover.Group>
 

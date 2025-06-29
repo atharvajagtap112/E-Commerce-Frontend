@@ -16,15 +16,29 @@ const HomePage = () => {
   const dispatch = useDispatch();
 
   const {products} =useSelector(store =>store) 
-                                 
+ 
+
+ 
 
     useEffect(() => {
-    
+           
        const data=[
             {
               categoryTitle:"Men's Kurta",
               categoryName:"mens_kurta"
+            },
+
+             {
+              categoryTitle:"Sarees",
+              categoryName:"saree"
             }
+            ,
+            { 
+               categoryTitle:"Tops",
+              categoryName:"top"
+
+            }
+
        ]
 
           
@@ -45,10 +59,10 @@ const HomePage = () => {
         <MainCarousel />
         <div className='space-y-10 py-20 flex flex-col justify-center px-50 lg:px-10'>
            < HomeSectionCarosel data={products?.productsByCategories[0]?.products} sectionName={products?.productsByCategories[0]?.categoryName} />
-           < HomeSectionCarosel data={mensShoesPage1 } sectionName={"Men's Shoes"}/>
-           < HomeSectionCarosel data={dressPage1}  sectionName={"Women's Dress"}/>
+           < HomeSectionCarosel data={products?.productsByCategories[1]?.products } sectionName={products?.productsByCategories[1]?.categoryName}/>
+           < HomeSectionCarosel data={products?.productsByCategories[2]?.products }  sectionName={products?.productsByCategories[2]?.categoryName }/>
         </div>
-        <Footer/>
+       
     </div>
   )
 }

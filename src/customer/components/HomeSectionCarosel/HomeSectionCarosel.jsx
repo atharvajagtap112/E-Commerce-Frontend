@@ -27,8 +27,9 @@ const HomeSectionCarosel = ({data,sectionName}) => {
     <div className="border">
       <h2 className="text-2xl font-extrabold text-left text-gray-800">
       {sectionName}</h2>
-      <div className="relative p-5 ">
+      <div className="relative p-5">
         <AliceCarousel
+     
           items={items}
           disableButtonsControls
           

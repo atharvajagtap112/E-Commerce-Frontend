@@ -1,18 +1,15 @@
-// AISearch.jsx
 import React, { useState, useEffect, useRef } from 'react';
-import * as Chart from 'chart.js';
-import SentimentChart from './SentimentChart'; // Make sure path is correct
 import { useDispatch } from 'react-redux';
 import { findProducts } from '../../../State/Product/Action';
 import { useNavigate } from 'react-router-dom';
 
 const AISearch = () => {
-  const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [chatSessions, setChatSessions] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
+  const [showResults, setShowResults] = useState(false);
   const [socket, setSocket] = useState(null);
-  const chatBoxRef = useRef(null);
+  const searchRef = useRef(null);
   
   const dispatch = useDispatch();
   const navigation = useNavigate();
@@ -34,13 +31,18 @@ const AISearch = () => {
 
           console.log("🔹 Parsed WebSocket Data: ", data);
 
-          dispatch(findProducts(data));
-
-          navigation(`/search/${data.category}`);
+          if (data.category === "") {
+            setSearchResults([]);
+            setShowResults(true);
+          } else {
+            dispatch(findProducts(data));
+            navigation(`/search/${data.category}`);
+          }
 
         } catch (error) {
           console.error("❌ Error parsing WebSocket response:", error);
-          addMessage(event.data, "bot");
+          setSearchResults([]);
+          setShowResults(true);
         }
       };
 
@@ -60,151 +62,180 @@ const AISearch = () => {
         newSocket.close();
       }
     };
-  }, [dispatch]);
+  }, [dispatch, navigation]);
 
-  useEffect(() => {
-    if (chatBoxRef.current) {
-      chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
-    }
-  }, [messages]);
-
-  const addMessage = (message, type, chartData = null) => {
-    const newMessage = {
-      id: Date.now(),
-      text: message,
-      type: type,
-      chartData: chartData,
-      timestamp: new Date()
-    };
-    setMessages(prev => [...prev, newMessage]);
-  };
-
-  const sendMessage = () => {
+  const handleSearch = () => {
     if (userInput.trim() === "" || !socket) return;
 
-    addMessage(userInput, "user");
-    setUserInput("");
+    setShowResults(false);
     setIsLoading(true);
-
     socket.send(userInput);
   };
 
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
-      sendMessage();
+      handleSearch();
     }
   };
 
-  const startNewChat = () => {
-    if (messages.length > 0) {
-      setChatSessions(prev => [...prev, { messages: [...messages], date: new Date() }]);
-    }
-    setMessages([]);
-  };
-
-  const formatMessage = (message) => {
-    try {
-      if (typeof message === "string" && message.trim().startsWith("{")) {
-        let data = JSON.parse(message);
-
-        if (data.plans) {
-          return (
-            <div>
-              <b>✅ Matching Plans:</b><br/><br/>
-              <div style={{width: '100%', textAlign: 'left'}}>
-                {/* Plan formatting logic would go here */}
-              </div>
-            </div>
-          );
-        } else if (data.error) {
-          return <b>❌ {data.error}</b>;
-        }
-      } else if (typeof message === "string" && message.toLowerCase().includes("here are some")) {
-        const formattedResponse = message.split(":")[0];
-        const productText = message.split(":")[1]?.trim() || "";
-        const products = productText.split("||").filter(item => item.trim() !== "");
-
-        return (
-          <div>
-            <b>🛒 {formattedResponse}:</b><br/><br/>
-            <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
-              {products.map((product, index) => {
-                if (product.trim() !== "") {
-                  const productParts = product.split(" (₹");
-                  const name = productParts[0]?.trim() || "";
-                  const price = productParts[1] ? `₹${productParts[1].replace(")", "")}` : "";
-
-                  return (
-                    <div key={index} style={{
-                      background: '#1e1e1e',
-                      padding: '12px',
-                      borderRadius: '10px',
-                      border: '1px solid #444',
-                      boxShadow: '0 0 10px rgba(0,0,0,0.3)'
-                    }}>
-                      <div style={{fontSize: '16px', fontWeight: 'bold', color: '#00d1b2'}}>{name}</div>
-                      <div style={{fontSize: '14px', color: '#ccc'}}>
-                        Price: <span style={{fontWeight: 'bold', color: '#ffd700'}}>{price}</span>
-                      </div>
-                    </div>
-                  );
-                }
-                return null;
-              })}
-            </div>
-          </div>
-        );
-      }
-    } catch (error) {
-      console.error("❌ Error parsing message:", error);
-    }
-
-    return message;
+  const clearSearch = () => {
+    setUserInput('');
+    setShowResults(false);
+    setSearchResults([]);
   };
 
   return (
-    <div className="app-container">
-      {/* sidebar and styles omitted for brevity */}
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-6xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <span className="text-2xl">🛒</span>
+              <h1 className="text-2xl font-bold text-gray-800">IntelliShop</h1>
+            </div>
+            <div className="flex items-center space-x-2 text-sm text-gray-600">
+              <span className="text-lg">✨</span>
+              <span>AI-Powered Search</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <div className="chat-container">
-        <div className="chat-header">
-          Hello, <span className="username">Ashvani</span>
+      {/* Main Search Section */}
+      <div className="max-w-4xl mx-auto px-4 py-12">
+        <div className="text-center mb-8">
+          <h2 className="text-4xl font-bold text-gray-800 mb-4">
+            Find anything with <span className="text-blue-600">AI</span>
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Describe what you're looking for in natural language. Our AI will find the perfect products for you.
+          </p>
         </div>
 
-        <div className="chat-box" ref={chatBoxRef}>
-          {messages.map((message) => (
-            <div key={message.id}>
-              {message.type === 'chart' && message.chartData ? (
-                <SentimentChart chartData={message.chartData} />
-              ) : (
-                <div className={`message ${message.type === 'user' ? 'user-message' : 'bot-message'}`}>
-                  {typeof formatMessage(message.text) === 'string'
-                    ? formatMessage(message.text)
-                    : <div>{formatMessage(message.text)}</div>
-                  }
-                </div>
+        {/* Search Bar */}
+        <div className="relative mb-8" ref={searchRef}>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <span className="text-gray-400 text-lg">🔍</span>
+            </div>
+            <input
+              type="text"
+              value={userInput}
+              onChange={(e) => setUserInput(e.target.value)}
+              placeholder="Try 'cotton men's kurta for summer' or 'slim fit jeans under 1500'"
+              onKeyPress={handleKeyPress}
+              className="w-full pl-12 pr-20 py-4 text-lg border-2 border-gray-200 rounded-2xl focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all duration-200 shadow-lg"
+              disabled={isLoading}
+            />
+            <div className="absolute inset-y-0 right-0 flex items-center space-x-2 pr-4">
+              {userInput && (
+                <button
+                  onClick={clearSearch}
+                  className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <span className="text-gray-400 text-lg">✕</span>
+                </button>
               )}
+              {/* <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                <span className="text-gray-400 text-lg">🎤</span>
+              </button> */}
+              <button
+                onClick={handleSearch}
+                disabled={isLoading || !userInput.trim()}
+                className="px-6 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-medium"
+              >
+                {isLoading ? (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>Searching...</span>
+                  </div>
+                ) : (
+                  'Search'
+                )}
+              </button>
             </div>
-          ))}
-
-          {isLoading && (
-            <div className="message loading-message">
-              Thinking...
-            </div>
-          )}
+          </div>
         </div>
 
-        <div className="chat-input">
-          <button className="mic-btn">🎤</button>
-          <input
-            type="text"
-            value={userInput}
-            onChange={(e) => setUserInput(e.target.value)}
-            placeholder="Ask Gemini..."
-            onKeyPress={handleKeyPress}
-          />
-          <button onClick={sendMessage}>➤</button>
-        </div>
+
+
+        {/* Loading State */}
+        {isLoading && (
+          <div className="text-center py-12">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
+              <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+            <h3 className="text-lg font-medium text-gray-800 mb-2">AI is thinking...</h3>
+            <p className="text-gray-600">Finding the best products for you</p>
+          </div>
+        )}
+
+        {/* Results Section */}
+        {showResults && !isLoading && (
+          <div className="bg-white rounded-2xl shadow-lg border p-6">
+            {searchResults.length === 0 ? (
+              // No products found
+              <div className="text-center py-12">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mb-4">
+                  <span className="text-3xl">⚠️</span>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">No products found</h3>
+                <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                  We couldn't find any products matching your search. Try different keywords or browse our categories.
+                </p>
+                <div className="flex justify-center space-x-4">
+                  <button
+                    onClick={clearSearch}
+                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Try another search
+                  </button>
+                 
+                </div>
+              </div>
+            ) : (
+              // Products found
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-semibold text-gray-800">
+                    Found {searchResults.length} products for "{userInput}"
+                  </h3>
+                  <button
+                    onClick={clearSearch}
+                    className="text-blue-600 hover:text-blue-700 font-medium"
+                  >
+                    New search
+                  </button>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {searchResults.map((product, index) => (
+                    <div
+                      key={index}
+                      className="border border-gray-200 rounded-xl p-4 hover:shadow-lg hover:border-blue-300 transition-all duration-200 cursor-pointer group"
+                    >
+                      <div className="bg-gray-100 rounded-lg h-48 mb-4 flex items-center justify-center group-hover:bg-gray-200 transition-colors">
+                        <span className="text-4xl">📦</span>
+                      </div>
+                      <h4 className="font-semibold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors">
+                        {product.name}
+                      </h4>
+                      <div className="flex items-center justify-between">
+                        <span className="text-2xl font-bold text-green-600">{product.price}</span>
+                        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                          View Details
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+
       </div>
     </div>
   );

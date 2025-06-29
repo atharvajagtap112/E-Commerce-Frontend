@@ -43,7 +43,7 @@ const DeliveryAddressForm = () => {
   return (
     <div>
       <Grid container spacing={4}>
-        <Grid 
+        {/* <Grid 
           item
           flex={0.6}
           xs={12}
@@ -68,11 +68,11 @@ const DeliveryAddressForm = () => {
               Deliver Here
             </Button>
           </div>
-        </Grid>
+        </Grid> */}
 
         <Grid 
         flex={0.8}
-        item xs={12} lg={7}>
+        item xs={12} lg={12}>
           <Box sx={{ 
             border: 1, 
             borderColor: 'grey.300',

@@ -6,7 +6,7 @@
         "color": "Yellow",
         "discountedPrice": 3999,
         "price": 8999,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -34,7 +34,7 @@
         "color": "Black",
         "discountedPrice": 1129,
         "price": 35999,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -58,7 +58,7 @@
         "color": "Black",
         "discountedPrice": 1999,
         "price": 20000,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -86,7 +86,7 @@
         "color": "Yellow",
         "discountedPrice": 19999,
         "price": 99999,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -109,7 +109,7 @@
         "color": "Green",
         "discountedPrice": 9999,
         "price": 18000,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -137,7 +137,7 @@
         "color": "Dark Blue",
         "discountedPrice": 9989,
         "price": 14999,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -160,7 +160,7 @@
         "color": "Maroon",
         "discountedPrice": 8009,
         "price": 10950,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -188,7 +188,7 @@
         "color": "Maroon",
         "discountedPrice": 7999,
         "price": 9550,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -216,7 +216,7 @@
         "color": "Gold, Orange",
         "discountedPrice": 7999,
         "price": 16999,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -244,7 +244,7 @@
         "color": "Blue",
         "discountedPrice": 7299,
         "price": 15239,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -272,7 +272,7 @@
         "color": "Maroon",
         "discountedPrice": 6999,
         "price": 13998,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -300,7 +300,7 @@
         "color": "Red",
         "discountedPrice": 6999,
         "price": 33999,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -328,7 +328,7 @@
         "color": "Green",
         "discountedPrice": 5999,
         "price": 14998,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -356,7 +356,7 @@
         "color": "Green",
         "discountedPrice": 5399,
         "price": 13999,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -384,7 +384,7 @@
         "color": "Black, Grey",
         "discountedPrice": 5409,
         "price": 13000,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -412,7 +412,7 @@
         "color": "Multicolor",
         "discountedPrice": 5009,
         "price": 13000,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -440,7 +440,7 @@
         "color": "Light Blue",
         "discountedPrice": 4999,
         "price": 14999,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -468,7 +468,7 @@
         "color": "Purple",
         "discountedPrice": 4999,
         "price": 12999,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -496,7 +496,7 @@
         "color": "Light Blue, Multicolor",
         "discountedPrice": 4999,
         "price": 14999,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -524,7 +524,7 @@
         "color": "Pink",
         "discountedPrice": 4999,
         "price": 14999,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -552,7 +552,7 @@
         "color": "Multicolor",
         "discountedPrice": 4209,
         "price": 13999,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -580,7 +580,7 @@
         "color": "Green",
         "discountedPrice": 4999,
         "price": 9999,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -608,7 +608,7 @@
         "color": "Blue",
         "discountedPrice": 4999,
         "price": 11999,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -636,7 +636,7 @@
         "color": "Blue",
         "discountedPrice": 4999,
         "price": 11999,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -664,7 +664,7 @@
         "color": "Purple, Yellow",
         "discountedPrice": 4509,
         "price": 9999,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -692,7 +692,7 @@
         "color": "Blue",
         "discountedPrice": 4499,
         "price": 15499,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -720,7 +720,7 @@
         "color": "Black",
         "discountedPrice": 4049,
         "price": 13239,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -748,7 +748,7 @@
         "color": "Yellow",
         "discountedPrice": 4009,
         "price": 10000,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -776,7 +776,7 @@
         "color": "Red",
         "discountedPrice": 4009,
         "price": 8999,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -804,7 +804,7 @@
         "color": "Orange",
         "discountedPrice": 4009,
         "price": 10000,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -832,7 +832,7 @@
         "color": "Red",
         "discountedPrice": 4999,
         "price": 11999,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -860,7 +860,7 @@
         "color": "Red",
         "discountedPrice": 4999,
         "price": 9898,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -888,7 +888,7 @@
         "color": "Dark Blue",
         "discountedPrice": 4999,
         "price": 13500,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -916,7 +916,7 @@
         "color": "Blue",
         "discountedPrice": 4999,
         "price": 12749,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -944,7 +944,7 @@
         "color": "Purple",
         "discountedPrice": 4999,
         "price": 14799,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -972,7 +972,7 @@
         "color": "Maroon",
         "discountedPrice": 4899,
         "price": 17196,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -1000,7 +1000,7 @@
         "color": "Maroon",
         "discountedPrice": 4899,
         "price": 17196,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -1028,7 +1028,7 @@
         "color": "Maroon",
         "discountedPrice": 4899,
         "price": 17196,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -1056,7 +1056,7 @@
         "color": "Maroon",
         "discountedPrice": 4899,
         "price": 9916,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20
@@ -1084,7 +1084,7 @@
         "color": "Black",
         "discountedPrice": 4999,
         "price": 11499,
-        "size": [
+        "sizes": [
             {
                 "name": "S",
                 "quantity": 20

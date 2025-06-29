@@ -31,6 +31,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { findProductsByCategories, findProductsById } from "../../../State/Product/Action";
 import { store } from "../../../State/store";
 import { addItemToCart } from "../../../State/Cart/Action";
+import { toast } from "react-toastify";
 
 const product = {
   name: "Basic Tee 6-Pack",
@@ -116,7 +117,17 @@ export default function ProductDetails() {
 
   console.log("product IDDD", param.productId);
 
+  const jwt = localStorage.getItem("jwt");
+
   const handleAddToCart = () => {
+
+    if (!jwt) {
+      toast("Please login to add items to cart");
+      
+      return;
+    }
+
+
     const data = {
       productId: param.productId,
       size: selectedSize,

@@ -1,6 +1,7 @@
 import axios from "axios"
 import { API_BASE_URL } from "../../config/apiConfig"
 import { GET_USER_FAILURE, GET_USER_REQUEST, GET_USER_SUCCESS, LOGIN_FAILURE, LOGIN_REQUEST, lOGIN_SUCCESS, LOGOUT, REGISTOR_FAILURE, REGISTOR_REQUEST, REGISTOR_SUCCESS } from "./ActionType";
+import { toast } from "react-toastify";
 
 const token=localStorage.getItem("jwt");
 
@@ -20,6 +21,7 @@ export const register=(userData)=> async (dispatch)=>{
        dispatch(registerSuccess(user.jwt));         
      }
     catch(error){
+       toast.error("Registration failed. Please try again.");
       dispatch(registerFailure(error.message))
     }}
 
@@ -41,6 +43,7 @@ const loginFailure=(error)=>({type:LOGIN_FAILURE, payload:error});
        dispatch(loginSuccess(user.jwt));         
      }
     catch(error){
+      toast.error("Login failed. Please check your credentials.");
       dispatch(loginFailure(error.message))
     }
   }

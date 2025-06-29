@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { findProductsById } from '../../../State/Product/Action'
 import { getOrderById } from '../../../State/Order/Action'
 import { createPayment } from '../../../State/Payment/Action'
+import { toast } from 'react-toastify'
 
 const OrderSummary = () => {
 
@@ -15,7 +16,7 @@ const OrderSummary = () => {
 
 const dispatch = useDispatch();
  
-const navigate = useNavigate();
+const navigation = useNavigate();
 const location= useLocation();
 const searchParams=new URLSearchParams(location.search);
   const orderId=searchParams.get("order_id");
@@ -27,6 +28,14 @@ const searchParams=new URLSearchParams(location.search);
   
 
 const handleCheckout=()=>{
+
+if(!order.order?.orderItems || order.order?.orderItems.length===0){
+  toast.error("Your order is empty. Please add items to your order before proceeding to checkout.");
+  navigation("/login");
+  return;
+  
+}
+
 dispatch(createPayment(orderId))
 }
 

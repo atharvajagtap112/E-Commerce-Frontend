@@ -1,8 +1,9 @@
 import { use } from "react"
 import { api } from "../../config/apiConfig"
-import { CREATE_ORDER_FAILURE, CREATE_ORDER_REQUEST, CREATE_ORDER_SUCCESS, GET_ORDER_BY_ID_FAILURE, GET_ORDER_BY_ID_REQUEST, GET_ORDER_BY_ID_SUCCESS, GET_ORDERS_FAILURE, GET_ORDERS_REQUEST, GET_ORDERS_SUCCESS } from "./ActionType"
+import { ADD_REVIEW_FAILURE, ADD_REVIEW_REQUEST, ADD_REVIEW_SUCCESS, CREATE_ORDER_FAILURE, CREATE_ORDER_REQUEST, CREATE_ORDER_SUCCESS, GET_ORDER_BY_ID_FAILURE, GET_ORDER_BY_ID_REQUEST, GET_ORDER_BY_ID_SUCCESS, GET_ORDERS_FAILURE, GET_ORDERS_REQUEST, GET_ORDERS_SUCCESS } from "./ActionType"
 import { useNavigate } from "react-router-dom"
-
+import { ADD_ITEM_TO_CART_SUCCESS } from "../Cart/ActionType"
+import { toast } from 'react-toastify';
 export const createOrder=(reqData)=> async (dispatch) => {
 
      
@@ -34,6 +35,7 @@ export const createOrder=(reqData)=> async (dispatch) => {
     }
 }
 
+
 export const getOrderById = (orderId) => async (dispatch) => {
     dispatch({ type: GET_ORDER_BY_ID_REQUEST });
 
@@ -54,11 +56,11 @@ export const getOrderById = (orderId) => async (dispatch) => {
     }
 };
 
-export const getOrders = () => async (dispatch) => {
+export const getOrders = (reqData) => async (dispatch) => {
     dispatch({type: GET_ORDERS_REQUEST})
     
     try{
-        const {data}=await api.get("/api/orders/user")
+        const {data}=await api.post("/api/orders/user",reqData.status)
         console.log("Orders fetched successfully", data);
         dispatch({type:GET_ORDERS_SUCCESS,payload:data})
     }
@@ -67,3 +69,23 @@ export const getOrders = () => async (dispatch) => {
         dispatch({type:GET_ORDERS_FAILURE,payload:error.message})
     }
 }
+
+
+
+export const addReview = (review) => async (dispatch) => {
+    dispatch({ type: ADD_REVIEW_REQUEST });
+
+    try {
+        console.log("Adding Review", review);
+        const { data } = await api.post("/api/review/create", review);
+        console.log("Review Added", data);
+
+        toast.success("Review Added Successfully");
+        dispatch({ type: ADD_REVIEW_SUCCESS });
+    } catch (error) {
+        console.log("Error Adding Review", error);
+
+        toast.error("Error Adding Review");
+        dispatch({ type: ADD_REVIEW_FAILURE, payload: error.message });
+    }
+};
