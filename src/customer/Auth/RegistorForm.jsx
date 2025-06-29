@@ -95,7 +95,19 @@ const RegistorForm = () => {
         size='large'
         sx={{ padding: ".8rem 0", bgcolor: "#9155FD" }}
       >
-        Register
+
+      {auth.isLoading ? (
+  <div className="flex items-center justify-center space-x-2">
+    <div className="flex space-x-1">
+      <div className="w-2 h-2 bg-white rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+      <div className="w-2 h-2 bg-white rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+      <div className="w-2 h-2 bg-white rounded-full animate-bounce"></div>
+    </div>
+    <span className="text-white font-medium">Creating account...</span>
+  </div>
+) : (
+  "Register"
+)}
       </Button>
    
   </Grid>

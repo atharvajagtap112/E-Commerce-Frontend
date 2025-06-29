@@ -9,10 +9,12 @@ import { findProductsById } from '../../../State/Product/Action'
 import { getOrderById } from '../../../State/Order/Action'
 import { createPayment } from '../../../State/Payment/Action'
 import { toast } from 'react-toastify'
+import Loading from '../Loading/loading'
 
 const OrderSummary = () => {
 
  const {order}=useSelector(store=>store)
+ const {payment}=useSelector(store=>store)
 
 const dispatch = useDispatch();
  
@@ -40,7 +42,20 @@ dispatch(createPayment(orderId))
 }
 
   return (
+    <>
+
+   { 
+    order.loading? 
+  <div   className="lg:col-span-4 w-full flex justify-center items-center h-screen">
+      
+                  <Loading/>
+                  </div>
+    
+    :
+    
     <div className=' space-y-5'> 
+    
+
       <div className='p-5 shadow-lg rounded-5-md border   '>
           <AddressCard address={order.order?.shippingAddress} />
            
@@ -87,15 +102,32 @@ dispatch(createPayment(orderId))
             className="w-full"
             sx={{ px: "2.5rem", py: "0.7rem", bgcolor: "#9155fd ",  alignSelf:"left"}}
             onClick={handleCheckout}
-          >
-            Checkout
+          > 
+
+        
+{payment.loading ? (
+  <div className="flex items-center justify-center space-x-2">
+    <div className="flex space-x-1">
+      <div className="w-2 h-2 bg-white rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+      <div className="w-2 h-2 bg-white rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+      <div className="w-2 h-2 bg-white rounded-full animate-bounce"></div>
+    </div>
+    <span className="text-white font-medium">Processing payment...</span>
+  </div>
+) : (
+  "Checkout"
+)}
+
           </Button>
            </div>
 
         </div>
       </div>
     </div>
+    
+    
     </div>
+    } </>
   )
 }
 

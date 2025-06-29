@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getCart } from "../../../State/Cart/Action";
 import { store } from "../../../State/store";
 import { toast } from "react-toastify";
+import Loading from "../Loading/loading";
 
 const CartCard = () => {
   const navigation=useNavigate();
@@ -36,6 +37,15 @@ const CartCard = () => {
 
   return (
     <div >
+
+          {cart.loading?
+                        
+                      <div   className="lg:col-span-4 w-full flex justify-center items-center h-screen">
+      
+                  <Loading/>
+                  </div>
+
+                  :
       <div className="lg:grid grid-cols-3 lg:px-16 relative">
         <div className="col-span-2">
          {cart.cartItems.length === 0?
@@ -88,7 +98,7 @@ const CartCard = () => {
            </div>
 
         </div>
-      </div>
+      </div>}
     </div>
   );
 };

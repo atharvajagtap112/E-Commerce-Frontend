@@ -30,6 +30,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { findProducts } from "../../../State/Product/Action";
 import { store } from "../../../State/store";
+import Loading from "../Loading/loading";
 
 const sortOptions = [
   { name: "Price: Low to High", href: "#", current: false , option:"price_low" },
@@ -101,8 +102,7 @@ const param =useParams();
 ])   
 
 
-
-
+ 
 const handlePaginationChange =(event,value)=>{
 event.preventDefault();
 
@@ -401,7 +401,7 @@ navigation({
 
                 <MenuItems
                   transition
-                  className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
+                  className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white cursor-pointer shadow-2xl ring-1 ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
                 >
                   <div className="py-1">
                     {sortOptions.map((option) => (
@@ -412,7 +412,7 @@ navigation({
                             option.current
                               ? "font-medium text-gray-900"
                               : "text-gray-500",
-                            "block px-4 py-2 text-sm data-focus:bg-gray-100 data-focus:outline-hidden"
+                            "block px-4 py-2  text-sm data-focus:bg-gray-100 data-focus:outline-hidden"
                           )}
                         >
                           {option.name}
@@ -423,21 +423,7 @@ navigation({
                 </MenuItems>
               </Menu>
 
-              <button
-                type="button"
-                className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7"
-              >
-                <span className="sr-only">View grid</span>
-                <Squares2X2Icon aria-hidden="true" className="size-5" />
-              </button>
-              <button
-                type="button"
-                onClick={() => setMobileFiltersOpen(true)}
-                className="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
-              >
-                <span className="sr-only">Filters</span>
-                <FunnelIcon aria-hidden="true" className="size-5" />
-              </button>
+            
             </div>
           </div>
 
@@ -570,19 +556,28 @@ navigation({
               </form>
 </div>
               {/* Product grid */}
-              <div className="lg:col-span-4 w-full">
+                  {products.loading?
+                  
+                <div   className="lg:col-span-4 w-full flex justify-center items-center h-screen">
+
+            <Loading/>
+            </div>
+
+
+             : <div className="lg:col-span-4 w-full">
                 <div className="flex flex-wrap justify-left bg-white py-5">
                      {products.products&&products.products?.content?.map((product) => (
                     <ProductCard product={product} />
                   ))}
                 </div>
               </div>
+              }
             </div>
           </section>
 
           <section className="w-full px=[3.6rem] ">
              <div className="px-4 py-5 flex justify-center">
-              <Pagination count={products.products?.totalPages}   color="secondary"  onChange={handlePaginationChange} />
+              <Pagination count={products.products?.totalPages}   page={parseInt(pageNumber)} color="secondary"  onChange={handlePaginationChange} />
               </div>    
           </section>
         </main>

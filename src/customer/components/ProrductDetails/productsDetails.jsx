@@ -32,6 +32,7 @@ import { findProductsByCategories, findProductsById } from "../../../State/Produ
 import { store } from "../../../State/store";
 import { addItemToCart } from "../../../State/Cart/Action";
 import { toast } from "react-toastify";
+import Loading from "../Loading/loading";
 
 const product = {
   name: "Basic Tee 6-Pack",
@@ -146,26 +147,36 @@ export default function ProductDetails() {
        const data=[
             {
               categoryTitle:"Selected Category",
-              categoryName:products.product?.category.name
+              categoryName:products.product?.category?.name
             }
        ]
    
    dispatch(findProductsByCategories(data));
 
-  },[dispatch, products.product?.category.name]);
+  },[dispatch, products.product?.category?.name]);
 
   const averageRating =
-    products.product?.reviews.length === 0
+    products.product?.reviews?.length === 0
       ? 0
       : (
-          products.product?.reviews.reduce((sum, r) => sum + r.rating, 0) /
-          products.product?.reviews.length
+          products.product?.reviews?.reduce((sum, r) => sum + r.rating, 0) /
+          products.product?.reviews?.length
         ).toFixed(1);
 
   return (
     <div className="bg-white lg:px-20">
+
+       {products.loading?
+                        
+                      <div   className="lg:col-span-4 w-full flex justify-center items-center h-screen">
+      
+                  <Loading/>
+                  </div>
+       
+      :
+
       <div className="pt-6">
-        <nav aria-label="Breadcrumb"></nav>
+      
 
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-10 px-4 pt-10">
           {/* Image gallery */}
@@ -230,7 +241,7 @@ export default function ProductDetails() {
                   />
 
                   <p className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500">
-                    {products.product?.reviews.length} Reviews
+                    {products?.product?.reviews?.length} Reviews
                   </p>
                 </div>
               </div>
@@ -247,7 +258,7 @@ export default function ProductDetails() {
                       onChange={setSelectedSize}
                       className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4"
                     >
-                      {products.product?.sizes.map((size) => (
+                      {products?.product?.sizes?.map((size) => (
                         <Radio
                           key={size.name}
                           value={size.name}
@@ -328,7 +339,7 @@ export default function ProductDetails() {
           <h1 className="font-semibold text-lg pb-4">Recent Review & Rating</h1>
           <div className="border p-5 max-w-6xl mx-auto">
             <Grid container spacing={3}>
-             { products?.product?.reviews.length > 0 &&
+             { products?.product?.reviews?.length > 0 &&
               <Grid item xs={12} md={8}>
                 <div className="space-y-5">
                   {products?.product?.reviews.map((item, i) => (
@@ -355,7 +366,7 @@ export default function ProductDetails() {
             ))}
           </div>
         </section>
-      </div>
+      </div> }
     </div>
   );
 }

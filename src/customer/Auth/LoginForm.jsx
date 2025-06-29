@@ -1,6 +1,6 @@
 import { Button, Grid, TextField } from "@mui/material";
 import React, { use, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getUser, login } from "../../State/Auth/Action";
 import { authReaducer } from "../../State/Auth/Reducer";
@@ -10,7 +10,7 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-
+ const {auth}=useSelector(store =>store)
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -27,6 +27,10 @@ const LoginForm = () => {
 
     console.log(userData);
   };
+
+  useEffect(() => {
+
+  }, [auth.isLoading]);
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -53,7 +57,9 @@ const LoginForm = () => {
               autoComplete="new-password"
             />
           </Grid>
+              
 
+              
           <Button
             className="bg-[#9155FD] w-full"
             type="submit"
@@ -61,7 +67,20 @@ const LoginForm = () => {
             size="large"
             sx={{ padding: ".8rem 0", bgcolor: "#9155FD" }}
           >
-            Login
+           {auth.isLoading ? (
+  <div className="flex items-center justify-center space-x-2">
+    <div className="flex space-x-1">
+      <div className="w-2 h-2 bg-white rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+      <div className="w-2 h-2 bg-white rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+      <div className="w-2 h-2 bg-white rounded-full animate-bounce"></div>
+    </div>
+    <span className="text-white font-medium">Signing in...</span>
+  </div>
+) : (
+  <p>Login</p>
+)}
+          
+          
           </Button>
         </Grid>
       </form>

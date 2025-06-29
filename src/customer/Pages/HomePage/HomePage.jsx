@@ -10,6 +10,7 @@ import Product from '../../components/Product/Product'
 import { findProducts, findProductsByCategories } from '../../../State/Product/Action'
 import { useDispatch, useSelector } from 'react-redux'
 import { store } from '../../../State/store'
+import Loading from '../../components/Loading/loading'
 
 const HomePage = () => {
 
@@ -47,21 +48,23 @@ const HomePage = () => {
      dispatch
   ])   
     
-  useEffect(() => {
-   console.log("Products by categories:", products?.productsByCategories);
-  }, [products?.productsByCategories]);
-  
+
   
   return (
     <div>
 
          
         <MainCarousel />
+         {products.loading?
+
+            <Loading/>
+
+    :
         <div className='space-y-10 py-20 flex flex-col justify-center px-50 lg:px-10'>
            < HomeSectionCarosel data={products?.productsByCategories[0]?.products} sectionName={products?.productsByCategories[0]?.categoryName} />
            < HomeSectionCarosel data={products?.productsByCategories[1]?.products } sectionName={products?.productsByCategories[1]?.categoryName}/>
            < HomeSectionCarosel data={products?.productsByCategories[2]?.products }  sectionName={products?.productsByCategories[2]?.categoryName }/>
-        </div>
+        </div>}
        
     </div>
   )

@@ -7,6 +7,7 @@ import { updatePayment } from '../../../State/Payment/Action';
 import { Alert, AlertTitle, Grid } from '@mui/material';
 import OrderTracker from '../Order/OrderTracker';
 import AddressCard from '../AddressCard/adddressCard';
+import Loading from '../Loading/loading';
 
 const PaymentSucess = () => {
     const [paymentId, setPaymentId] = React.useState();
@@ -52,6 +53,9 @@ const PaymentSucess = () => {
          </div>
    <OrderTracker activeStep={1}/>
    
+   {order.loading?
+    <div className="lg:col-span-4 w-full flex justify-center items-center h-screen">
+        <Loading/> </div>  :
    <Grid container  direction="column" className="space-y-2  py-5 pt-20" spacing={2} sx={{mt:4}}>
       
      {   order.order?.orderItems?.map((item)=>
@@ -86,7 +90,7 @@ const PaymentSucess = () => {
       ) 
         
         }
-    </Grid>
+    </Grid>}
    
     </div>
   )
