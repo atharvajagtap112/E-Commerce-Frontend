@@ -83,7 +83,7 @@ const CartCard = () => {
            
               <div className="flex justify-between pt-3 text-black">
                 <span>Total Amount</span>
-                <span className="text-green-600">{cart.cart?.totalDiscountPrice}</span>
+                <span className="text-green-600">₹{cart.cart?.totalDiscountPrice}</span>
               </div>
             </div>
          
