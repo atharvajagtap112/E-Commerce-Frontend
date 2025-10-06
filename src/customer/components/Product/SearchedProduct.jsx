@@ -36,9 +36,6 @@ const sortOptions = [
   { name: "Price: High to Low", href: "#", current: false, option:"price_high" },
 ];
 
- 
-
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -46,158 +43,111 @@ function classNames(...classes) {
 export default function SearchedProduct() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   
-  const location=useLocation();
-  const navigation=useNavigate();  
-const param =useParams();
+  const location = useLocation();
+  const navigation = useNavigate();  
+  const param = useParams();
 
-
-  const decodedQueryString=decodeURIComponent(location.search);
+  const decodedQueryString = decodeURIComponent(location.search);
   const searchParams = new URLSearchParams(decodedQueryString);
 
-
-
-
-  const colorValue= searchParams.get("color");
-  const sizeValue= searchParams.get("size");
-  const sortValue= searchParams.get("sort");
-  const priceValue= searchParams.get("price");
-  const discount=searchParams.get("discount");
-  const pageNumber=searchParams.get("page")||1;
-  const stock= searchParams.get("stock");
+  const colorValue = searchParams.get("color");
+  const sizeValue = searchParams.get("size");
+  const sortValue = searchParams.get("sort");
+  const priceValue = searchParams.get("price");
+  const discount = searchParams.get("discount");
+  const pageNumber = searchParams.get("page") || 1;
+  const stock = searchParams.get("stock");
  
-  
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
+  const {products} = useSelector(store => store);
 
-  const {products}=useSelector(store=>store)
+  // Function to make API call with filters
+  const fetchFilteredProducts = () => {
+    const [minPrice, maxPrice] = priceValue === null ? [0, 100000] : priceValue.split("-").map(Number);
 
-  useEffect(() => {
-
-      const [minPrice,maxPrice]= priceValue===null?[0,100000]:priceValue.split("-").map(Number)
-
-  const data={
-
-      category:param.query,
+    const data = {
+      category: param.query,
       colors: colorValue || [],
       sizes: sizeValue || [],
       minPrice: minPrice,
       maxPrice: maxPrice,
       minDiscount: discount || 0,
       maxDiscount: discount || 100000,
-      sort:sortValue || "price_low",
-      pageNumber: pageNumber-1||0,
-      stock: stock ,
-      pageSize:10,
+      sort: sortValue || "price_low",
+      pageNumber: pageNumber - 1 || 0,
+      stock: stock,
+      pageSize: 10,
+    };
 
-    }
-
-   console.log(data);
-
+    console.log("🔹 Making API call with filters:", data);
     dispatch(findProducts(data));
-  },[
+  };
+
+  // Only call API when there are URL parameters (manual filters applied)
+  useEffect(() => {
+    // Check if there are any filter parameters in the URL
+    const hasFilters = colorValue || sizeValue || sortValue || priceValue || discount || pageNumber > 1 || stock;
+    
+    if (hasFilters) {
+      console.log("🔹 URL parameters detected, making API call");
+      fetchFilteredProducts();
+    } else {
+      console.log("🔹 No URL parameters, using existing AI search results");
+    }
+  }, [
     param.query,
-   colorValue,  
+    colorValue,  
     sizeValue,
     sortValue,
     priceValue,
     discount,
     pageNumber,
     stock     
-  ])
+  ]);
 
+  const handlePaginationChange = (event, value) => {
+    event.preventDefault();
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set("page", value);
+    navigation({ search: `?${searchParams.toString()}` });
+  };
 
+  const handleFilter = (value, sectionId) => {
+    const searchParams = new URLSearchParams(location.search); 
+    let filterValue = searchParams.getAll(sectionId);   
 
-const handlePaginationChange =(event,value)=>{
-event.preventDefault();
-
- const searchParams=new URLSearchParams(location.search);
-  searchParams.set("page",value)
-  navigation({ search:`?${searchParams.toString()}` });
-}
-
-
-  
-   const handleFilter=(value, sectionId)=>{
-
-       const searchParams = new URLSearchParams(location.search); 
-/*   
-this is how the searchParams looks like it stores the key and value in the URL
-  
-    
-   {
-      color: "red,white",
-        size: "large"
-                                  }
-URLSearchParams just stores this parametre 
-simple just store in URLSearchParams using set(key,value)
-after we set it will store in storage 
-now convert that map in to string and add ? at the start of it and put in navigation(Search:Here)
- but to update the URL we need to use navigation
-*/
-
-    let filterValue= searchParams.getAll(sectionId);   
-    //if sectionId==color it get ["red,white"] 
-         
-
-      // Now checking if value is present in this array  ["red,white"]     
-      //as diff colors are in single string so we need to split it 
-      // and check if value is present in this array
-      //if yes then we need to remove it from the array
-      if(filterValue.length>0&& filterValue[0].split(",").includes(value) ){
-        
-        filterValue=filterValue[0].split(",").filter((items)=> items!==value)
-        //if value is present in the array then we need to remove it from the filterValue and again storing it in the filterValue
-       
-        if(filterValue.length===0){
-          //now if the filterValue is empty then we need to remove the sectionId from the searchParams
-          //the sectionId is key and filterValue is value
-          searchParams.delete(sectionId); 
-      }}
-         
-      //if value is not present in the array then we need to add it to the filterValue
-      else{
-        filterValue.push(value); 
-        // → value=yellow ['red,white', 'yellow']
+    if(filterValue.length > 0 && filterValue[0].split(",").includes(value)) {
+      filterValue = filterValue[0].split(",").filter((items) => items !== value);
+      if(filterValue.length === 0) {
+        searchParams.delete(sectionId); 
       }
+    } else {
+      filterValue.push(value); 
+    }
       
-      //but this is store here only need to update in the searchParams also 
-      //need to store in the form of string ['red,white', 'yellow'] ==> 'red,white,yellow'
-      if(filterValue.length>0){
-        searchParams.set(sectionId, filterValue.join(","));
-        
-      }
-      // now need to update the searchParams in the URL
-      //to do this we req navigation
+    if(filterValue.length > 0) {
+      searchParams.set(sectionId, filterValue.join(","));
+    }
 
-     const queryString = searchParams.toString();
-//     {
-//                 color: "red,white",
-//                 size: "large"
-//                                  }
+    const queryString = searchParams.toString();
+    navigation({
+      search: `?${queryString}`
+    });
+  };
 
-//when we convert this to string it looks like this
-// "color=red,white&size=large" and now just add ? at the start of it and done 
-        
-navigation({
-  search:`?${queryString}`
-});
-//It changes the URL in the browser to include that query string.
-        
+  const handleRadioFilterChnage = (value, sectionId) => {
+    const searchParams = new URLSearchParams(location.search); 
+    searchParams.set(sectionId, value.target.value);
+    const queryString = searchParams.toString();
+    navigation({search: `?${queryString}`});
+  };
 
-  }
-
-  const handleRadioFilterChnage=(value, sectionId)=>{
-   const searchParams = new URLSearchParams(location.search); 
-   searchParams.set(sectionId, value.target.value);
-     const queryString = searchParams.toString();
-        navigation({search:`?${queryString}`});
-  }
-
-  const handleSortFilterChange=(value, sectionId)=>{
-   const searchParams = new URLSearchParams(location.search); 
-   searchParams.set(sectionId, value);
-     const queryString = searchParams.toString();
-        navigation({search:`?${queryString}`});
-  }
+  const handleSortFilterChange = (value, sectionId) => {
+    const searchParams = new URLSearchParams(location.search); 
+    searchParams.set(sectionId, value);
+    const queryString = searchParams.toString();
+    navigation({search: `?${queryString}`});
+  };
     
   return (
     <div className="bg-white">
@@ -331,7 +281,6 @@ navigation({
                     <DisclosurePanel className="pt-6">
                       <div className="space-y-6">
                         {section.options.map((option, optionIdx) => (
-
                           <div key={option.value} className="flex gap-3">
                             <div className="flex h-5 shrink-0 items-center">
                               <div className="group grid size-4 grid-cols-1">
@@ -390,10 +339,7 @@ navigation({
             <div className="flex items-center">
               <Menu as="div" className="relative inline-block text-left">
                 <div>
-                  <MenuButton 
-                    
-
-                  className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
+                  <MenuButton className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
                     Sort
                     <ChevronDownIcon
                       aria-hidden="true"
@@ -410,7 +356,7 @@ navigation({
                     {sortOptions.map((option) => (
                       <MenuItem key={option.name}>
                         <a
-                          onClick={()=>handleSortFilterChange(option.option,"sort")}
+                          onClick={() => handleSortFilterChange(option.option, "sort")}
                           className={classNames(
                             option.current
                               ? "font-medium text-gray-900"
@@ -454,129 +400,125 @@ navigation({
               <div>
                 <div className="py-10 flex justify-between items-center">  
                   <h1 className="text-lg opacity-50 font-bold text-left">Filters</h1>
-              <FilterListIcon /></div>
+                  <FilterListIcon />
+                </div>
              
-              <form className="hidden lg:block">
-                <h3 className="sr-only">Categories</h3>
+                <form className="hidden lg:block">
+                  <h3 className="sr-only">Categories</h3>
 
-                {filters.map((section) => (
-                  <Disclosure
-                    key={section.id}
-                    as="div"
-                    className="border-b border-gray-200 py-6"
-                  >
-                    <h3 className="-my-3 flow-root">
-                      <DisclosureButton className="group flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
-                        <span className="font-medium text-gray-900">
-                          {section.name}
-                        </span>
-                        <span className="ml-6 flex items-center">
-                          <PlusIcon
-                            aria-hidden="true"
-                            className="size-5 group-data-open:hidden"
-                          />
-                         
-                        </span>
-                      </DisclosureButton>
-                    </h3>
-                    <DisclosurePanel className="pt-6">
-                      <div className="space-y-4">
-                        {section.options.map((option, optionIdx) => (
-                          <div key={option.value} className="flex gap-3">
-                            <div className="flex h-5 shrink-0 items-center">
-                              <div className="group grid size-4 grid-cols-1">
-                                <input
-                                 onChange={()=>handleFilter(option.value, section.id)}
-                                  defaultValue={option.value}
-                                  defaultChecked={option.checked}
-                                  id={`filter-${section.id}-${optionIdx}`}
-                                  name={`${section.id}[]`}
-                                  type="checkbox"
-                                  className="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto"
-                                />
-                                <svg
-                                  fill="none"
-                                  viewBox="0 0 14 14"
-                                  className="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled:stroke-gray-950/25"
-                                >
-                                  <path
-                                    d="M3 8L6 11L11 3.5"
-                                    strokeWidth={2}
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    className="opacity-0 group-has-checked:opacity-100"
+                  {filters.map((section) => (
+                    <Disclosure
+                      key={section.id}
+                      as="div"
+                      className="border-b border-gray-200 py-6"
+                    >
+                      <h3 className="-my-3 flow-root">
+                        <DisclosureButton className="group flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
+                          <span className="font-medium text-gray-900">
+                            {section.name}
+                          </span>
+                          <span className="ml-6 flex items-center">
+                            <PlusIcon
+                              aria-hidden="true"
+                              className="size-5 group-data-open:hidden"
+                            />
+                          </span>
+                        </DisclosureButton>
+                      </h3>
+                      <DisclosurePanel className="pt-6">
+                        <div className="space-y-4">
+                          {section.options.map((option, optionIdx) => (
+                            <div key={option.value} className="flex gap-3">
+                              <div className="flex h-5 shrink-0 items-center">
+                                <div className="group grid size-4 grid-cols-1">
+                                  <input
+                                    onChange={() => handleFilter(option.value, section.id)}
+                                    defaultValue={option.value}
+                                    defaultChecked={option.checked}
+                                    id={`filter-${section.id}-${optionIdx}`}
+                                    name={`${section.id}[]`}
+                                    type="checkbox"
+                                    className="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto"
                                   />
-                                  <path
-                                    d="M3 7H11"
-                                    strokeWidth={2}
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    className="opacity-0 group-has-indeterminate:opacity-100"
-                                  />
-                                </svg>
+                                  <svg
+                                    fill="none"
+                                    viewBox="0 0 14 14"
+                                    className="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled:stroke-gray-950/25"
+                                  >
+                                    <path
+                                      d="M3 8L6 11L11 3.5"
+                                      strokeWidth={2}
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      className="opacity-0 group-has-checked:opacity-100"
+                                    />
+                                    <path
+                                      d="M3 7H11"
+                                      strokeWidth={2}
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      className="opacity-0 group-has-indeterminate:opacity-100"
+                                    />
+                                  </svg>
+                                </div>
                               </div>
+                              <label
+                                htmlFor={`filter-${section.id}-${optionIdx}`}
+                                className="text-sm text-gray-600"
+                              >
+                                {option.label}
+                              </label>
                             </div>
-                            <label
-                              htmlFor={`filter-${section.id}-${optionIdx}`}
-                              className="text-sm text-gray-600"
-                            >
-                              {option.label}
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                    </DisclosurePanel>
-                  </Disclosure>
-                ))}
+                          ))}
+                        </div>
+                      </DisclosurePanel>
+                    </Disclosure>
+                  ))}
                 
-                {singleFilter.map((section) => (
-                  <Disclosure  key={section.id}  as="div" className="border-b border-gray-200 py-6"  >
-                    
-                  <>
-                    <h3 className="-my-3 flow-root">
-                      <DisclosureButton className="group flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
-                        
-                        {/* <span className="font-medium "></span> */}
-                        
-                           <FormLabel sx={{color:"black"}} className="text-gray-900" id="demo-radio-buttons-group-label">
-                               {section.name}
+                  {singleFilter.map((section) => (
+                    <Disclosure key={section.id} as="div" className="border-b border-gray-200 py-6">
+                      <>
+                        <h3 className="-my-3 flow-root">
+                          <DisclosureButton className="group flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
+                            <FormLabel sx={{color:"black"}} className="text-gray-900" id="demo-radio-buttons-group-label">
+                              {section.name}
                             </FormLabel>
-                     
-                        <span className="ml-6 flex items-center">
-                          <PlusIcon
-                            aria-hidden="true"
-                            className="size-5 group-data-open:hidden"
-                          />
-                          
-                        </span>
-                        
-                      </DisclosureButton>
-                    </h3>
-                    <DisclosurePanel className="pt-6">
-                      <div className="space-y-4">
-                        <FormControl>
-                         <RadioGroup aria-labelledby="demo-radio-buttons-group-label" defaultValue="female"  name="radio-buttons-group"  >
-                        {section.options.map((option, optionIdx) => (
-                        
-                        <>
-                          <FormControlLabel onChange={(e)=>handleRadioFilterChnage(e,section.id)}  value={option.value}  control={<Radio />}     label={option.label}/>
-                        </>
+                            <span className="ml-6 flex items-center">
+                              <PlusIcon
+                                aria-hidden="true"
+                                className="size-5 group-data-open:hidden"
+                              />
+                            </span>
+                          </DisclosureButton>
+                        </h3>
+                        <DisclosurePanel className="pt-6">
+                          <div className="space-y-4">
+                            <FormControl>
+                              <RadioGroup aria-labelledby="demo-radio-buttons-group-label" defaultValue="female" name="radio-buttons-group">
+                                {section.options.map((option, optionIdx) => (
+                                  <FormControlLabel 
+                                    key={option.value}
+                                    onChange={(e) => handleRadioFilterChnage(e, section.id)} 
+                                    value={option.value} 
+                                    control={<Radio />} 
+                                    label={option.label}
+                                  />
                                 ))}
-
-                                </RadioGroup> </FormControl>
-                      </div>
-                    </DisclosurePanel>
-                     </>
-                  </Disclosure>
-                ))}
-               
-              </form>
-</div>
+                              </RadioGroup> 
+                            </FormControl>
+                          </div>
+                        </DisclosurePanel>
+                      </>
+                    </Disclosure>
+                  ))}
+                </form>
+              </div>
+              
               {/* Product grid */}
               <div className="lg:col-span-4 w-full">
                 <div className="flex flex-wrap justify-left bg-white py-5">
-                     {products.products&&products.products?.content?.map((product) => (
-                    <ProductCard product={product} />
+                  {products.products && products.products?.content?.map((product) => (
+                    <ProductCard key={product.id} product={product} />
                   ))}
                 </div>
               </div>
@@ -584,9 +526,9 @@ navigation({
           </section>
 
           <section className="w-full px=[3.6rem] ">
-             <div className="px-4 py-5 flex justify-center">
-              <Pagination count={products.products?.totalPages}   color="secondary"  onChange={handlePaginationChange} />
-              </div>    
+            <div className="px-4 py-5 flex justify-center">
+              <Pagination count={products.products?.totalPages} color="secondary" onChange={handlePaginationChange} />
+            </div>    
           </section>
         </main>
       </div>
