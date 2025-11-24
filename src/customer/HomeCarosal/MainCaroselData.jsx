@@ -4,7 +4,7 @@ export const mainCarouselData = [
     path: "/women/clothing/women_dress"
   },
   {
-    image: "https://rangita.com/cdn/shop/articles/blog_banner_5.jpg?v=1751451420&width=1780",
+    image: "https://rangita.com/cdn/shop/articles/karwa_chouth_blog_banner.jpg?v=1757927847&width=1500",
     path: "/women/clothing/women_dress"
   },
   {
