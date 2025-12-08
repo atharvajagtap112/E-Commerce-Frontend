@@ -29,7 +29,7 @@ const CartCard = () => {
 
   useEffect(() => {
     dispatch(getCart())
-  },[dispatch,cart.updateCart,cart.deleteItem]
+  },[dispatch]
 
 )
   

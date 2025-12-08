@@ -18,14 +18,16 @@ export const authReaducer=(state=initialState,action)=>{
         case REGISTOR_SUCCESS:
         case lOGIN_SUCCESS:
         return {...state, isLoading:false, error:null,jwt:action.payload,}
-
+        
         case GET_USER_SUCCESS:
             return {...state,isLoading:false,user:action.payload, error:null};
         
         case REGISTOR_FAILURE:
         case LOGIN_FAILURE:
+             return {...state,user:null,isLoading:false,error:action.payload,jwt:null};
         case GET_USER_FAILURE:
-            return {...state,isLoading:false,error:action.payload};          
+              localStorage.removeItem("jwt");
+            return {...state,user:null,isLoading:false,error:action.payload,jwt:null};          
 
         case LOGOUT :
             return{...initialState}   

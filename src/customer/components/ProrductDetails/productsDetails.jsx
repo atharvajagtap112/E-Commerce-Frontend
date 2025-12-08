@@ -120,14 +120,14 @@ export default function ProductDetails() {
 
   const jwt = localStorage.getItem("jwt");
 
-  const handleAddToCart = () => {
+  const handleAddToCart =async () => {
 
     if (!jwt) {
       toast("Please login to add items to cart");
       
       return;
     }
-
+      console.log("Jwt token:", jwt);
 
     const data = {
       productId: param.productId,
@@ -135,9 +135,12 @@ export default function ProductDetails() {
       quantity: 1,
       price: products.product?.price,
     };
-    dispatch(addItemToCart(data));
+    
+    await dispatch(addItemToCart(data));
 
-    navigation(`/cart`);
+   setTimeout(() => {
+        navigation(`/cart`);
+    }, 500);
   };
 
 

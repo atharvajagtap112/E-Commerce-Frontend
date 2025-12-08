@@ -61,11 +61,12 @@ export const getUser=(jwt)=> async (dispatch)=>{
           }
         })
          const user=response.data;
-        console.log(user);
+        console.log("user ", user);
 
        dispatch(getUserSuccess(user));         
      }
     catch(error){
+      console.log("Error fetching user  get user Function:", error);
       dispatch(getUserFailure(error.message))
     }
   }
